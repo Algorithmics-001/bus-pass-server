@@ -1,4 +1,0 @@
-/student/getstudentdetailsbyID
-/college/get-all-colleges
-/buserivce/get-all-services
-
