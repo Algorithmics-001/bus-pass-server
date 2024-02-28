@@ -90,18 +90,18 @@ app.get('/get/students', async (req, res) => {
 });
 
 app.get('/post/student', async (req, res) => {
-  const {name, course} = req.query;
+  const {name, email, password} = req.query;
   const pool = await getDatabasePool();
-  pool.query(`INSERT INTO student(name, course) VALUES('${name}','${course}')`, (err, r) => { //INSERT INTO student(id, name, course) VALUES(1, 'Raghav', 'CSE');
+  pool.query(`INSERT INTO student(name, email, password) VALUES('${name}','${email}', '${password}')`, (err, r) => { //INSERT INTO student(id, name, course) VALUES(1, 'Raghav', 'CSE');
     res.json({ message: r.rows });
   });
 });
 
-app.post('/student/add', async (req, res) => {
-  const {name} = req.query;
+app.get('/student/get', async (req, res) => {
+  const {id} = req.query;
   const pool = await getDatabasePool();
-  let query = 'SELECT * FROM student';
-  const values = [];
+  let query = 'SELECT * FROM student WHERE id=';
+  const values = [id];
   const result = await pool.query(query, values);
   console.log(result)
   res.json({rows: result.rows});
