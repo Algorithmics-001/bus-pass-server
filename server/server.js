@@ -91,16 +91,20 @@ app.get('/get/students', async (req, res) => {
 
 app.get('/post/student', async (req, res) => {
   const {name, email, password} = req.query;
+  console.log(name, email, password);
   const pool = await getDatabasePool();
-  pool.query(`INSERT INTO student(name, email, password) VALUES('${name}','${email}', '${password}')`, (err, r) => { //INSERT INTO student(id, name, course) VALUES(1, 'Raghav', 'CSE');
-    res.json({ message: r.rows });
-  });
+  const query = `INSERT INTO student(name, email, password) VALUES($1, $2, $3)`
+  const values = [name, email, password];
+  const result = await pool.query(query, values);
+    console.log(result)
+    res.json({test: "result"});
+
 });
 
 app.get('/student/get', async (req, res) => {
   const {id} = req.query;
   const pool = await getDatabasePool();
-  let query = 'SELECT * FROM student WHERE id=';
+  let query = 'SELECT * FROM student WHERE id=$1';
   const values = [id];
   const result = await pool.query(query, values);
   console.log(result)
