@@ -93,10 +93,8 @@ app.get('/post/student', async (req, res) => {
   const {name, course} = req.query;
   const pool = await getDatabasePool();
   pool.query(`INSERT INTO student(name, course) VALUES('${name}','${course}')`, (err, r) => { //INSERT INTO student(id, name, course) VALUES(1, 'Raghav', 'CSE');
-    // console.log(r.rowCount);
     res.json({ message: r.rows });
   });
-  // res.json({ message: "echo" });
 });
 
 app.post('/student/add', async (req, res) => {
@@ -115,7 +113,9 @@ app.listen(8000, () => {
 
 
 /*
-pool.query(`SELECT * FROM users WHERE username='${loginData.email}' AND password='${loginData.password}'`, (err, r) => {
-      console.log(r.rowCount);
-    });
+  let query = 'SELECT * FROM student';
+  const values = [];
+  const result = await pool.query(query, values);
+  // console.log(result)
+  res.json({rows: result.rows});
 */
