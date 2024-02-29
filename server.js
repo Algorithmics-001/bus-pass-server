@@ -96,9 +96,20 @@ app.get('/post/student', async (req, res) => {
   const query = `INSERT INTO student(name, email, password) VALUES($1, $2, $3)`
   const values = [name, email, password];
   const result = await pool.query(query, values);
-    console.log(result)
+    // console.log(result)
     res.json({test: "result"});
+});
 
+app.get('/student/apply', async (req, res) => {
+  const {id, name, rollno, course, year, batch, semester, department, phone_number} = req.query;
+  console.log(name, rollno, course, year, batch, semester, department, phone_number);
+  const pool = await getDatabasePool();
+  const query = `UPDATE student
+  SET rollno=$1, course=$2, year=$3, batch=$4, semester=$5, department=$6, phone_number=$7 WHERE id=$8`
+  const values = [rollno, course, year, batch, semester, department, phone_number, id];
+  const result = await pool.query(query, values);
+    // console.log(result)
+    res.json({test: "success"});
 });
 
 app.get('/student/get', async (req, res) => {
