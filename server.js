@@ -93,11 +93,11 @@ app.get('/post/student', async (req, res) => {
   const {name, email, password} = req.query;
   console.log(name, email, password);
   const pool = await getDatabasePool();
-  const query = `INSERT INTO student(name, email, password) VALUES($1, $2, $3)`
+  const query = `INSERT INTO student(name, email, password) VALUES($1, $2, $3) returning id;`
   const values = [name, email, password];
   const result = await pool.query(query, values);
-    // console.log(result)
-    res.json({test: "result"});
+    console.log(result)
+    res.json({id: result.rows[0].id});
 });
 
 app.get('/student/apply', async (req, res) => {
