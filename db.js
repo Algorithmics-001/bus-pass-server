@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-
+require('dotenv').config();
 async function getDatabasePool() {
     const pool = new Pool({
         user: process.env.POSTGRESQL_USERNAME,

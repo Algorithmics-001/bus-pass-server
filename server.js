@@ -47,38 +47,54 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-app.post('/signup', async (req, res) => {
-
+/*
+[x] Name
+[x] Email = username in db
+[x] Password
+Course
+Batch
+Semester
+RollNumber
+Department
+Phone Number
+*/
+app.get('/signup', async (req, res) => {
+  const { name, email, password, course, batch, semester, rollno, department, phone } = req.query;
+  // console.log(req.query)
   const pool = await getDatabasePool();
+  
   try {
-    const signupData = req.body;
-    console.log(signupData);
-    const userexist = false;
-    pool.query(`SELECT * FROM users WHERE username='${signupData.email}'`, (err, r) => {
-      if (r.rowCount > 0) {
-        return res.send({
-          message: "User already exists.",
-          type: "error"
-        });
-      }
-    });
-    pool.query(`INSERT INTO users(username, password, name) VALUES(
-'${signupData.email}',
-'${signupData.password}',
-'${signupData.name}'
-)`, (err, r) => {
-      res.send({
-        message: "Congratulations, Account Created Successfully!",
-        type: "success"
+    const userExistQuery = 'SELECT * FROM users WHERE username = $1';
+    const userExistValues = [email];
+    const existingUser = await pool.query(userExistQuery, userExistValues);
+
+    if (existingUser.rowCount > 0) {
+      return res.send({
+        message: "User already exists.",
+        type: "error"
       });
+    }
+
+  // Insert into users table and retrieve the inserted user's ID
+  const insertUserQuery = 'INSERT INTO users(username, password, name, usertype) VALUES($1, $2, $3, $4) RETURNING userid';
+  const insertUserValues = [email, password, name, 'student'];
+  const { rows } = await pool.query(insertUserQuery, insertUserValues);
+  const userid = rows[0].userid;
+  console.log(userid)
+  const insertStudentQuery = 'INSERT INTO student(name, course, batch, semester, rollno, department, phone_number, userid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
+  const insertStudentValues = [name, course, batch, semester, rollno, department, phone, userid];
+  await pool.query(insertStudentQuery, insertStudentValues);
+
+    res.send({
+      message: "Congratulations, Account Created Successfully!",
+      type: "success"
     });
   } catch (error) {
     console.error('Error saving user:', error);
-
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 app.get('/get/students', async (req, res) => {
   const pool = await getDatabasePool();
