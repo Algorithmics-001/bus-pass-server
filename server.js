@@ -7,6 +7,7 @@ const app = express();
 const { getDatabasePool } = require('./db.js');
 const   bodyParser = require("body-parser");
 const signupRouter = require('./routes/signup.js'), 
+loginRouter = require('./routes/login.js'), 
 swaggerJsdoc = require("swagger-jsdoc"),
 swaggerUi = require("swagger-ui-express");
 const options = {
@@ -43,40 +44,7 @@ app.get('/message', (req, res) => {
   res.json({ message: "Search Projects From Database" });
 });
 app.use('/', signupRouter);
-app.post('/login', async (req, res) => {
-  const loginData = req.body;
-  console.log(loginData);
-  const pool = await getDatabasePool();
-  var username;
-  let id;
-  try {
-    pool.query(`SELECT * FROM users WHERE username='${loginData.email}' AND password='${loginData.password}'`, (err, r) => {
-      console.log(r.rowCount);
-      if (r.rowCount != 0) {
-        username = r.rows[0].name;
-        id = r.rows[0].userid;
-        return res.send({
-          message: `Logged in successfully! username: ${username}`,
-          type: "success",
-          name: `${username}`,
-          id: `${id}`
-        })
-      } else {
-        return res.send({
-          message: "Username or Password invalid.",
-          type: "error"
-        })
-      }
-    });
-  }
-  catch (e) {
-    return res.send({
-      message: "Username or Password invalid.",
-      type: "error"
-    })
-  }
-});
-
+app.use('/', loginRouter)
 
 app.get('/get/students', async (req, res) => {
   const otp1 = otpGenerator.generate(6);
