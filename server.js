@@ -6,10 +6,11 @@ const { redirect } = require('react-router-dom');
 const app = express();
 const { getDatabasePool } = require('./db.js');
 const   bodyParser = require("body-parser");
-const signupRouter = require('./routes/signup.js'), 
-loginRouter = require('./routes/login.js'), 
-swaggerJsdoc = require("swagger-jsdoc"),
-swaggerUi = require("swagger-ui-express");
+const signupRouter = require('./routes/signup.js'); 
+const tempRouter = require('./routes/temporary.js');
+const loginRouter = require('./routes/login.js');
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 app.use(cors());
 const options = {
@@ -45,40 +46,9 @@ app.get('/message', (req, res) => {
   res.json({ message: "Search Projects From Database" });
 });
 app.use('/', signupRouter);
-app.use('/', loginRouter)
+app.use('/', loginRouter);
+app.use('/', tempRouter);
 
-app.get('/get/students', async (req, res) => {
-  const otp1 = otpGenerator.generate(6);
-  console.log(otp1);
-  const pool = await getDatabasePool();
-  let query = 'SELECT * FROM student';
-  const values = [];
-  const result = await pool.query(query, values);
-  // console.log(result)
-  res.json({rows: result.rows});
-});
-
-app.get('/get/users', async (req, res) => {
-  const otp1 = otpGenerator.generate(6);
-  console.log(otp1);
-  const pool = await getDatabasePool();
-  let query = 'SELECT * FROM users';
-  const values = [];
-  const result = await pool.query(query, values);
-  // console.log(result)
-  res.json({rows: result.rows});
-});
-
-app.get('/post/student', async (req, res) => {
-  const {name, email, password} = req.query;
-  console.log(name, email, password);
-  const pool = await getDatabasePool();
-  const query = `INSERT INTO student(name, email, password) VALUES($1, $2, $3) returning id;`
-  const values = [name, email, password];
-  const result = await pool.query(query, values);
-    console.log(result)
-    res.json({id: result.rows[0].id});
-});
 
 app.get('/student/apply', async (req, res) => {
   const {id, name, rollno, course, year, batch, semester, department, phone_number} = req.query;
@@ -90,16 +60,6 @@ app.get('/student/apply', async (req, res) => {
   const result = await pool.query(query, values);
     // console.log(result)
     res.json({test: "success"});
-});
-
-app.get('/student/get', async (req, res) => {
-  const {id} = req.query;
-  const pool = await getDatabasePool();
-  let query = 'SELECT * FROM student WHERE id=$1';
-  const values = [id];
-  const result = await pool.query(query, values);
-  console.log(result)
-  res.json({rows: result.rows});
 });
 
 app.listen(8000, () => {
