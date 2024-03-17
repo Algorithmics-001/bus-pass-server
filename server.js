@@ -58,6 +58,17 @@ app.get('/get/students', async (req, res) => {
   res.json({rows: result.rows});
 });
 
+app.get('/get/users', async (req, res) => {
+  const otp1 = otpGenerator.generate(6);
+  console.log(otp1);
+  const pool = await getDatabasePool();
+  let query = 'SELECT * FROM users';
+  const values = [];
+  const result = await pool.query(query, values);
+  // console.log(result)
+  res.json({rows: result.rows});
+});
+
 app.get('/post/student', async (req, res) => {
   const {name, email, password} = req.query;
   console.log(name, email, password);
