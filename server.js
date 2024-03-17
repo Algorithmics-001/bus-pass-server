@@ -10,6 +10,8 @@ const signupRouter = require('./routes/signup.js'),
 loginRouter = require('./routes/login.js'), 
 swaggerJsdoc = require("swagger-jsdoc"),
 swaggerUi = require("swagger-ui-express");
+
+app.use(cors());
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -36,7 +38,6 @@ app.use(
   swaggerUi.setup(specs)
 );
 
-app.use(cors());
 app.use(express.json());
 
 
