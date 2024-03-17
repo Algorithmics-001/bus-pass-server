@@ -9,6 +9,7 @@ const   bodyParser = require("body-parser");
 const signupRouter = require('./routes/signup.js'); 
 const tempRouter = require('./routes/temporary.js');
 const loginRouter = require('./routes/login.js');
+const applyRouter = require('./routes/apply.js');
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -48,19 +49,10 @@ app.get('/message', (req, res) => {
 app.use('/', signupRouter);
 app.use('/', loginRouter);
 app.use('/', tempRouter);
+app.use('/', applyRouter);
 
 
-app.get('/student/apply', async (req, res) => {
-  const {id, name, rollno, course, year, batch, semester, department, phone_number} = req.query;
-  console.log(name, rollno, course, year, batch, semester, department, phone_number);
-  const pool = await getDatabasePool();
-  const query = `UPDATE student
-  SET rollno=$1, course=$2, year=$3, batch=$4, semester=$5, department=$6, phone_number=$7 WHERE id=$8`
-  const values = [rollno, course, year, batch, semester, department, phone_number, id];
-  const result = await pool.query(query, values);
-    // console.log(result)
-    res.json({test: "success"});
-});
+
 
 app.listen(8000, () => {
   console.log(`Server is running on port 8000.`);
