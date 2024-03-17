@@ -51,38 +51,41 @@ function checkMissingFields(query) {
  *
  */
 router.post('/login', async (req, res) => {
-    const loginData = req.body;
-    console.log(loginData);
-    const pool = await getDatabasePool();
-    var username;
-    let id;
-    try {
-      pool.query(`SELECT * FROM users WHERE username='${loginData.email}' AND password='${loginData.password}'`, (err, r) => {
-        console.log(r.rowCount);
-        if (r.rowCount != 0) {
-          username = r.rows[0].name;
-          id = r.rows[0].userid;
+  const loginData = req.body;
+  console.log(loginData);
+  
+  try {
+      const query = {
+          text: 'SELECT * FROM users WHERE username = $1 AND password = $2',
+          values: [loginData.email, loginData.password]
+      };
+
+      const result = await pool.query(query);
+
+      if (result.rowCount !== 0) {
+          const username = result.rows[0].name;
+          const id = result.rows[0].userid;
+
           return res.send({
-            message: `Logged in successfully! username: ${username}`,
-            type: "success",
-            name: `${username}`,
-            id: `${id}`
-          })
-        } else {
+              message: `Logged in successfully! username: ${username}`,
+              type: "success",
+              name: username,
+              id: id
+          });
+      } else {
           return res.send({
-            message: "Username or Password invalid.",
-            type: "error"
-          })
-        }
-      });
-    }
-    catch (e) {
+              message: "Username or Password invalid.",
+              type: "error"
+          });
+      }
+  } catch (e) {
+      console.error('Error executing query:', e);
       return res.send({
-        message: "Username or Password invalid.",
-        type: "error"
-      })
-    }
-  });
+          message: "An error occurred.",
+          type: "error"
+      });
+  }
+});
   
 
 
