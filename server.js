@@ -1,9 +1,39 @@
 require('dotenv').config();
 const express = require('express');
+const otpGenerator = require('./modules/otpgenerator.js')
 const cors = require('cors');
 const { redirect } = require('react-router-dom');
 const app = express();
 const { getDatabasePool } = require('./db.js');
+const   bodyParser = require("body-parser"),
+swaggerJsdoc = require("swagger-jsdoc"),
+swaggerUi = require("swagger-ui-express");
+
+const options = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "LogRocket Express API with Swagger",
+      version: "0.1.0",
+      description:
+        "This is a simple CRUD API application made with Express and documented with Swagger"
+    },
+    servers: [
+      {
+        url: "http://localhost:8000",
+      },
+    ],
+  },
+  apis: ["server.js"],
+};
+
+
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
 
 app.use(cors());
 app.use(express.json());
@@ -47,22 +77,120 @@ app.post('/login', async (req, res) => {
   }
 });
 
-/*
-[x] Name
-[x] Email = username in db
-[x] Password
-Course
-Batch
-Semester
-RollNumber
-Department
-Phone Number
+function checkMissingFields(query) {
+  const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
+  const missingFields = [];
+  requiredFields.forEach(field => {
+    if (!query[field]) {
+      missingFields.push(field);
+    }
+  });
+
+  if (missingFields.length > 0) {
+    return {
+      status: false,
+      message: `Missing fields: ${missingFields.join(', ')}`
+    };
+  } else {
+    return {
+      status: true
+    };
+  }
+}
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     SignupData:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *         - course
+ *         - batch
+ *         - semester
+ *         - rollno
+ *         - department
+ *         - phone
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the user.
+ *         name:
+ *           type: string
+ *           description: Name of the student.
+ *         email:
+ *           type: string
+ *           description: Email address of the student.
+ *         password:
+ *           type: string
+ *           description: Password for the student's account.
+ *         course:
+ *           type: string
+ *           description: Course in which the student is enrolled.
+ *         batch:
+ *           type: integer
+ *           description: Year of batch for the student.
+ *         semester:
+ *           type: integer
+ *           description: Current semester of the student.
+ *         rollno:
+ *           type: integer
+ *           description: Roll number of the student.
+ *         department:
+ *           type: string
+ *           description: Department in which the student is studying.
+ *         phone:
+ *           type: string
+ *           description: Phone number of the student.
+ *
+ *       example:
+ *         name: Amrinder Singh
+ *         email: test@example.com
+ *         password: Str0Ngp@ssWO4D
+ *         course: inter
+ *         batch: 2025
+ *         semester: 3
+ *         rollno: 123456
+ *         department: CSE
+ *         phone: 123456789
 */
-app.get('/signup', async (req, res) => {
-  const { name, email, password, course, batch, semester, rollno, department, phone } = req.query;
-  // console.log(req.query)
+
+/**
+ * @swagger
+ * tags:
+ *   name: User Management
+ *   description: Simple account creation, deletion, login etc.
+ * /signup:
+ *   post:
+ *     summary: simple signup endpoint
+ *     tags: [SignUp]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SignupData'
+ *     responses:
+ *       200:
+ *         description: Congratulations, Account Created Successfully!
+ *         content:
+ *           application/json:
+ *             example:
+ *              message: Congratulations, Account Created Successfully!
+ *              id: 132456
+ *       500:
+ *         description: Some server error
+ *
+ */
+app.post('/signup', async (req, res) => {
+  const { name, email, password, course, batch, semester, rollno, department, phone } = req.body;
+  fields = checkMissingFields(req.body);
+  if(fields.status==true) {
   const pool = await getDatabasePool();
-  
   try {
     const userExistQuery = 'SELECT * FROM users WHERE username = $1';
     const userExistValues = [email];
@@ -84,19 +212,27 @@ app.get('/signup', async (req, res) => {
   const insertStudentQuery = 'INSERT INTO student(name, course, batch, semester, rollno, department, phone_number, userid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
   const insertStudentValues = [name, course, batch, semester, rollno, department, phone, userid];
   await pool.query(insertStudentQuery, insertStudentValues);
+    res.status(200).send({
+      message: 'Congratulations, Account Created Successfully!',
+      id: userid
+  });
 
-    res.send({
-      message: "Congratulations, Account Created Successfully!",
-      type: "success"
-    });
   } catch (error) {
     console.error('Error saving user:', error);
     res.status(500).send('Internal Server Error');
+  }
+
+  } else {
+    res.status(500).send({
+      message: fields.message
+    });
   }
 });
 
 
 app.get('/get/students', async (req, res) => {
+  const otp1 = otpGenerator.generate(6);
+  console.log(otp1);
   const pool = await getDatabasePool();
   let query = 'SELECT * FROM student';
   const values = [];
