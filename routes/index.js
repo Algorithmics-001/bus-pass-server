@@ -68,8 +68,5 @@ router.post('/loginn', (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.send('You are authenticated!');
-});
 
 module.exports = router;
