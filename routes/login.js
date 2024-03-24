@@ -45,30 +45,31 @@ function checkMissingFields(query) {
  *           application/json:
  *             example:
  *              message: Loggged in Successfully!
- *              id: 132456
+ *              name: John Done
+ *              id: 12345
  *       500:
  *         description: Some server error
  *
  */
 router.post('/login', async (req, res) => {
+  const pool = await getDatabasePool();
   const loginData = req.body;
   console.log(loginData);
   
   try {
       const query = {
-          text: 'SELECT * FROM users WHERE username = $1 AND password = $2',
+          text: "SELECT userid,name,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
           values: [loginData.email, loginData.password]
       };
 
       const result = await pool.query(query);
-
-      if (result.rowCount !== 0) {
+      // console.log(result);
+      if (result.rows[0].password_correct == true) {
           const username = result.rows[0].name;
           const id = result.rows[0].userid;
 
-          return res.send({
+          return res.status(200).send({
               message: `Logged in successfully! username: ${username}`,
-              type: "success",
               name: username,
               id: id
           });

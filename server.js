@@ -10,6 +10,7 @@ const signupRouter = require('./routes/signup.js');
 const tempRouter = require('./routes/temporary.js');
 const loginRouter = require('./routes/login.js');
 const applyRouter = require('./routes/apply.js');
+const indexRouter = require('./routes/index.js');
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -50,6 +51,7 @@ app.use('/', signupRouter);
 app.use('/', loginRouter);
 app.use('/', tempRouter);
 app.use('/', applyRouter);
+app.use('/', indexRouter);
 
 
 

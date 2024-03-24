@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getDatabasePool } = require('../db.js');
+const bcrypt = require('bcrypt');
 
 
 function checkMissingFields(query) {
@@ -66,9 +67,10 @@ router.post('/signup', async (req, res) => {
           type: "error"
         });
       }
-  
     // Insert into users table and retrieve the inserted user's ID
-    const insertUserQuery = 'INSERT INTO users(username, password, name, usertype) VALUES($1, $2, $3, $4) RETURNING userid';
+    const insertUserQuery = `INSERT INTO users(username, password_hash, name, usertype)
+    VALUES ($1, crypt($2, gen_salt('bf')), $3, $4)
+    RETURNING userid;`;
     const insertUserValues = [email, password, name, 'student'];
     const { rows } = await pool.query(insertUserQuery, insertUserValues);
     const userid = rows[0].userid;
