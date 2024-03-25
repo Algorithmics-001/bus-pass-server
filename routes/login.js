@@ -1,6 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const { getDatabasePool } = require('../db.js');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.JWT_SECRET_KEY;
+const {verifyToken} = require('../modules/auth.js');
+
+function generateToken(user) {
+  return jwt.sign({id: user.userid, name: user.name,email: user.username , type: user.usertype}, secretKey, { expiresIn: '1h' });
+}
 
 
 function checkMissingFields(query) {
@@ -54,20 +62,22 @@ function checkMissingFields(query) {
 router.post('/login', async (req, res) => {
   const pool = await getDatabasePool();
   const loginData = req.body;
-  console.log(loginData);
   
   try {
       const query = {
-          text: "SELECT userid,name,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
+          text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
           values: [loginData.email, loginData.password]
       };
 
       const result = await pool.query(query);
-      // console.log(result);
       if (result.rows[0].password_correct == true) {
           const username = result.rows[0].name;
           const id = result.rows[0].userid;
-
+          const user = result.rows[0];
+          const token = generateToken(user);
+          res.cookie('token', token, { 
+            httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
+          });
           return res.status(200).send({
               message: `Logged in successfully! username: ${username}`,
               name: username,
@@ -87,9 +97,37 @@ router.post('/login', async (req, res) => {
       });
   }
 });
+
+/**
+ * @swagger
+ * tags:
+ *   name: User Management
+ *   description: Simple account creation, deletion, login, etc.
+ * /logout:
+ *   post:
+ *     summary: Logout endpoint
+ *     tags: [LogOut]
+ *     description: Clears the authentication token, logging the user out.
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Logged out successfully
+ *       500:
+ *         description: Some server error
+ */
+
+router.post('/logout', (req, res) => {
+  res.cookie('token', '', { expires: new Date(0) });
+  res.status(200).send({ message: 'Logged out successfully' });
+});
+
   
-
-
+router.get('/protected', verifyToken('student'), (req, res) => {
+  res.json({ message: 'Protected route accessed successfully' });
+});
 
   
 /**
