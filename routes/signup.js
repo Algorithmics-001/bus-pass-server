@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { getDatabasePool } = require('../db.js');
-const bcrypt = require('bcrypt');
-
 
 function checkMissingFields(query) {
     const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
