@@ -12,11 +12,7 @@ jobs:
       - name: stop the server if running
         working-directory: /home/github/
         run: |
-          export NVM_DIR="/home/github/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-          nvm exec npm i pm2
-          pm2 stop server
+          /home/github/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 stop server
       - name: Copy files to destination
         run: rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
       - name: Setup enviornment variables
@@ -32,8 +28,5 @@ jobs:
       - name: Install packages and start the server
         working-directory: /home/github/bus-pass-api/mobile-app/
         run: |          
-          export NVM_DIR="/home/github/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
           nvm exec npm i
-          pm2 start server.js
+          /home/github/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 start server.js
