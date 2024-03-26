@@ -8,5 +8,4 @@ jobs:
     runs-on: amr
     steps:
       - name: print working dir
-        working-directory: $GITHUB_WORKSPACE/
-        run: pwd > here
+        run: pwd
