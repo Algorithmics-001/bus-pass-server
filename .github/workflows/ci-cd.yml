@@ -8,29 +8,4 @@ jobs:
     runs-on: amr
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Copy files to destination
-        run: |
-          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
-
-      - name: Install Dependencies
-        working-directory: /home/github/bus-pass-api/mobile-app
-        run: |
-          npm i
-
-      - name: Create Environment File
-        run: |
-          echo "SSRP_BOT_TOKEN=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
-          echo "SSRP_DB_HOST=\"${{ secrets.POSTGRESQL_HOST }}\"" >> .env
-          echo "SSRP_DB_PW=\"${{ secrets.POSTGRESQL_DATABASE }}\"" >> .env
-          echo "SSRP_DB_PORT=\"${{ secrets.POSTGRESQL_PASSWORD }}\"" >> .env
-          echo "SSRP_DB_USERNAME=\"${{ secrets.POSTGRESQL_PORT }}\"" >> .env
-          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
-          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
-          sudo rsync -av .env /home/github/bus-pass-api/mobile-app
-  
-      - name: Install Dependencies
-        working-directory: /home/github/bus-pass-api/mobile-app
-        run: |
-          nohup node server.js &
+        run: pwd > test.txt
