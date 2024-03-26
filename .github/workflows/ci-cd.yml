@@ -9,10 +9,11 @@ jobs:
     steps:
       - name: stop the server if running
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: pkill -f 'node server.js' &
+        run: sudo systemctl stop bus-pass-api
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
-        run: git pull
+        run: |
+         git pull
       - name: Setup enviornment variables
         run: |
           echo "SSRP_BOT_TOKEN=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
@@ -24,8 +25,7 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
           rsync -av .env /home/github/bus-pass-server/mobile-app/
       - name: Install packages
-        working-directory: /home/github/bus-pass-server/mobile-app/
-        run: nohup npm i &
+        run: sudo systemctl restart bus-pass-api-update
       - name: Start the server
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: nohup node server.js &
+        run: sudo systemctl restart bus-pass-api
