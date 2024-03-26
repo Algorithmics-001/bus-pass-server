@@ -10,7 +10,7 @@ jobs:
       - name: stop the server if running
         working-directory: /home/github/bus-pass-server/mobile-app/
         run: sudo systemctl stop bus-pass-api
-        
+
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
         run: |
@@ -29,6 +29,7 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
 
       - name: Install packages
+        working-directory: /home/github/bus-pass-server/mobile-app/
         run: npm i
 
       - name: Start the server
