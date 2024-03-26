@@ -23,6 +23,7 @@ jobs:
           echo "SSRP_DB_USERNAME=\"${{ secrets.POSTGRESQL_PORT }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
+          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
           rsync -av .env /home/github/bus-pass-server/mobile-app/
       - name: Install packages
         run: sudo systemctl restart bus-pass-api-update

@@ -56,7 +56,7 @@ app.use('/', applyRouter);
 
 
 
-app.listen(8000, () => {
+app.listen(process.env.BUSPASS_SERVER_MOBILE_API_PORT, () => {
   console.log(`Server is running on port 8000.`);
 });
 
