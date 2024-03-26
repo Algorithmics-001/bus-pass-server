@@ -19,14 +19,14 @@ jobs:
       - name: Setup enviornment variables
         working-directory: /home/github/bus-pass-server/mobile-app/
         run: |
-          echo "SSRP_BOT_TOKEN=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
-          echo "SSRP_DB_HOST=\"${{ secrets.POSTGRESQL_HOST }}\"" >> .env
-          echo "SSRP_DB_PW=\"${{ secrets.POSTGRESQL_DATABASE }}\"" >> .env
-          echo "SSRP_DB_PORT=\"${{ secrets.POSTGRESQL_PASSWORD }}\"" >> .env
-          echo "SSRP_DB_USERNAME=\"${{ secrets.POSTGRESQL_PORT }}\"" >> .env
-          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
-          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
-          echo "SSRP_FACTIONBOT_DB=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
+          echo "POSTGRESQL_USERNAME=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
+          echo "POSTGRESQL_HOST=\"${{ secrets.POSTGRESQL_HOST }}\"" >> .env
+          echo "POSTGRESQL_DATABASE=\"${{ secrets.POSTGRESQL_DATABASE }}\"" >> .env
+          echo "POSTGRESQL_PASSWORD=\"${{ secrets.POSTGRESQL_PASSWORD }}\"" >> .env
+          echo "POSTGRESQL_PORT=\"${{ secrets.POSTGRESQL_PORT }}\"" >> .env
+          echo "JWT_SECRET_KEY=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
+          echo "ENDPOINT_URL=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
+          echo "BUSPASS_SERVER_MOBILE_API_PORT=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
 
       - name: Install packages
         working-directory: /home/github/bus-pass-server/mobile-app/
