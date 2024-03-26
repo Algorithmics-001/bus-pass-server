@@ -12,12 +12,12 @@ jobs:
 
       - name: Copy files to destination
         run: |
-          sudo rsync -av --delete $GITHUB_WORKSPACE/ /home/github/mobile-app/
+          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/mobile-app/
 
       - name: Install Dependencies
         working-directory: /home/github/mobile-app/
         run: |
-          npm install
+          npm i
 
       - name: Create Environment File
         run: |
@@ -31,4 +31,4 @@ jobs:
           sudo rsync -av .env /home/github/mobile-app/
   
       - name: Restart Bot Service
-        run: echo "running"
+        run: npm start
