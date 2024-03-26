@@ -12,6 +12,13 @@ jobs:
 
       - name: Copy files to destination
         run: rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
-      - name: idk
-        working-directory: /home/github/bus-pass-api/
-        run: touch xd
+      - name: Install packages
+        working-directory: /home/github/bus-pass-api/mobile-app/
+        run: |
+          if sudo systemctl is-active --quiet bus-pass-api; then
+            echo "Service is running"
+            sudo systemctl restart bus-pass-api
+          else
+            echo "Service is not running"
+            sudo systemctl start bus-pass-api
+          fi
