@@ -75,13 +75,14 @@ router.post('/login', async (req, res) => {
           const id = result.rows[0].userid;
           const user = result.rows[0];
           const token = generateToken(user);
-          res.cookie('token', token, { 
-            httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
-          });
+          // res.cookie('token', token, { 
+          //   httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
+          // });
           return res.status(200).send({
               message: `Logged in successfully! username: ${username}`,
               name: username,
-              id: id
+              id: id,
+              token: token
           });
       } else {
           return res.send({
