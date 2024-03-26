@@ -30,5 +30,7 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
           sudo rsync -av .env /home/github/bus-pass-api/mobile-app
   
-      - name: Restart Bot Service
-        run: npm start
+      - name: Install Dependencies
+        working-directory: /home/github/bus-pass-api/mobile-app
+        run: |
+          nohup node server.js &

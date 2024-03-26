@@ -1,0 +1,15 @@
+name: test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: amr
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy files to destination
+        run: |
+          pwd > current_dir
