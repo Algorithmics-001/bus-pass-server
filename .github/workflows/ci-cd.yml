@@ -12,4 +12,4 @@ jobs:
 
       - name: Copy files to destination
         run: |
-          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/mobile-app/
+          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
