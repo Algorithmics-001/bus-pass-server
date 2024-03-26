@@ -1,7 +1,9 @@
 name: Deploy Busspass mobile api
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
