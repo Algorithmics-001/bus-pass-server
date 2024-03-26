@@ -11,5 +11,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Copy files to destination
-        run: |
-          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
+        run: rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
+      - name: idk
+        working-directory: /home/github/bus-pass-api/
+        run: touch xd
