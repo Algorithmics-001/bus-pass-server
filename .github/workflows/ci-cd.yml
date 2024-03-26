@@ -25,8 +25,11 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
           rsync -av .env /home/github/bus-pass-api/mobile-app/
+          
       - name: Install packages and start the server
         working-directory: /home/github/bus-pass-api/mobile-app/
-        run: |          
-          /home/github/.nvm/versions/node/v20.11.1/bin/npm i
-          /home/github/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 start server.js
+        run: /home/github/.nvm/versions/node/v20.11.1/bin/npm i
+        
+      - name: start the server
+        working-directory: /home/github/bus-pass-api/mobile-app/
+        run: /home/github/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 start server.js
