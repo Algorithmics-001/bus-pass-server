@@ -10,7 +10,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: stop the server if running
-        run: pm2 stop server
+        working-directory: /home/github/
+        run: |
+          export NVM_DIR="$/home/github/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
+          pm2 stop server
       - name: Copy files to destination
         run: rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
       - name: Setup enviornment variables
@@ -25,6 +30,9 @@ jobs:
           sudo rsync -av .env /home/github/mobile-app/
       - name: Install packages and start the server
         working-directory: /home/github/bus-pass-api/mobile-app/
-        run: |
+        run: |          
+          export NVM_DIR="$/home/github/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
           npm i
           pm2 start server.js
