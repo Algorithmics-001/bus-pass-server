@@ -12,7 +12,7 @@ jobs:
       - name: stop the server if running
         working-directory: /home/github/
         run: |
-          export NVM_DIR="$/home/github/.nvm"
+          export NVM_DIR="/home/github/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
           nvm exec npm i pm2 -g
@@ -32,7 +32,7 @@ jobs:
       - name: Install packages and start the server
         working-directory: /home/github/bus-pass-api/mobile-app/
         run: |          
-          export NVM_DIR="$/home/github/.nvm"
+          export NVM_DIR="/home/github/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
           nvm exec npm i pm2 -g
