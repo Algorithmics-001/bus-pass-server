@@ -15,7 +15,6 @@ jobs:
           export NVM_DIR="/home/github/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-          nvm exec npm i pm2 -g
           pm2 stop server
       - name: Copy files to destination
         run: rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
@@ -35,6 +34,5 @@ jobs:
           export NVM_DIR="/home/github/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
-          nvm exec npm i pm2 -g
           nvm exec npm i
           pm2 start server.js
