@@ -10,11 +10,14 @@ jobs:
       - name: stop the server if running
         working-directory: /home/github/bus-pass-server/mobile-app/
         run: sudo systemctl stop bus-pass-api
+        
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
         run: |
          git pull
+
       - name: Setup enviornment variables
+        working-directory: /home/github/bus-pass-server/mobile-app/
         run: |
           echo "SSRP_BOT_TOKEN=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
           echo "SSRP_DB_HOST=\"${{ secrets.POSTGRESQL_HOST }}\"" >> .env
@@ -24,9 +27,9 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
-          rsync -av .env /home/github/bus-pass-server/mobile-app/
+
       - name: Install packages
-        working-directory: /home/github/bus-pass-server/mobile-app/
         run: npm i
+
       - name: Start the server
         run: sudo systemctl restart bus-pass-api
