@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: stop the server if running
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: pkill -f 'node server.js' || true
+        run: pkill -f 'node server.js' &
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
         run: git pull
@@ -25,7 +25,7 @@ jobs:
           rsync -av .env /home/github/bus-pass-server/mobile-app/
       - name: Install packages
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: $(nohup npm i &); true
+        run: nohup npm i &
       - name: Start the server
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: $(nohup node server.js &); true
+        run: nohup node server.js &
