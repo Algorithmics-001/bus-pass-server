@@ -12,10 +12,10 @@ jobs:
 
       - name: Copy files to destination
         run: |
-          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/mobile-app/
+          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/bus-pass-api/
 
       - name: Install Dependencies
-        working-directory: /home/github/mobile-app/
+        working-directory: /home/github/bus-pass-api/mobile-app
         run: |
           npm i
 
@@ -28,7 +28,7 @@ jobs:
           echo "SSRP_DB_USERNAME=\"${{ secrets.POSTGRESQL_PORT }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.JWT_SECRET_KEY }}\"" >> .env
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.ENDPOINT_URL }}\"" >> .env
-          sudo rsync -av .env /home/github/mobile-app/
+          sudo rsync -av .env /home/github/bus-pass-api/mobile-app
   
       - name: Restart Bot Service
         run: npm start
