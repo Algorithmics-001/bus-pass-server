@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  testingg:
+  deploy:
     runs-on: amr
     steps:
-      - name: print working dir
-        run: pwd
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy files to destination
+        run: |
+          rsync -av --delete $GITHUB_WORKSPACE/ /home/github/mobile-app/
