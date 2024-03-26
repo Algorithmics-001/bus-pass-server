@@ -26,7 +26,7 @@ jobs:
           echo "SSRP_FACTIONBOT_DB=\"${{ secrets.BUSPASS_SERVER_MOBILE_API_PORT }}\"" >> .env
           rsync -av .env /home/github/bus-pass-server/mobile-app/
       - name: Install packages
-        run: sudo systemctl restart bus-pass-api-update
-      - name: Start the server
         working-directory: /home/github/bus-pass-server/mobile-app/
+        run: npm i
+      - name: Start the server
         run: sudo systemctl restart bus-pass-api
