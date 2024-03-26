@@ -28,5 +28,5 @@ jobs:
       - name: Install packages and start the server
         working-directory: /home/github/bus-pass-api/mobile-app/
         run: |          
-          nvm exec npm i
+          /home/github/.nvm/versions/node/v20.11.1/bin/npm i
           /home/github/.nvm/versions/node/v20.11.1/lib/node_modules/pm2/bin/pm2 start server.js
