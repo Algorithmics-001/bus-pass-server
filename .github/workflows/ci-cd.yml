@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  testingg:
     runs-on: amr
     steps:
-      - name: Checkout code
-        run: pwd > test.txt
+      - name: print working dir
+        run: touch here
