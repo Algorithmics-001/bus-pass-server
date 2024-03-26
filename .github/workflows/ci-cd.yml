@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: stop the server if running
         working-directory: /home/github/bus-pass-server/mobile-app/
-        run: pkill -f 'node server.js'
+        run: pkill -f 'node server.js' || true
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
         run: git pull
