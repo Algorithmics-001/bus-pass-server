@@ -85,14 +85,14 @@ router.post('/login', async (req, res) => {
               token: token
           });
       } else {
-          return res.send({
+          return res.status(401).send({
               message: "Username or Password invalid.",
               type: "error"
           });
       }
   } catch (e) {
       console.error('Error executing query:', e);
-      return res.send({
+      return res.status(500).send({
           message: "An error occurred.",
           type: "error"
       });
