@@ -1,107 +1,100 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const { getDatabasePool } = require('../db.js');
+const {verifyToken} = require('../modules/auth.js');
+const axios = require('axios');
+
+
+async function sendToDiscord(message) {
+  await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      chat_id: process.env.TELEGRAM_CHAT_ID,
+      text: message
+  })
+  .then(response => {
+      console.log('Message sent:', response.data);
+  })
+  .catch(error => {
+      console.error('Error sending message:', error);
+  });
+}
 
 /**
  * @swagger
- * tags:
- *   name: student
  * /student/apply:
- *   get:
- *     summary: Update student information in the database
- *     description: Update student details such as roll number, course, year, batch, semester, department, and phone number.
- *     tags: [student]
- *     parameters:
- *       - in: query
- *         name: id
- *         required: true
- *         description: ID of the student to update
- *         schema:
- *           type: integer
- *       - in: query
- *         name: name
- *         required: true
- *         description: Name of the student
- *         schema:
- *           type: string
- *           example: John Doe
- *       - in: query
- *         name: rollno
- *         required: true
- *         description: Roll number of the student
- *         schema:
- *           type: string
- *           example: ABC123
- *       - in: query
- *         name: course
- *         required: true
- *         description: Course of the student
- *         schema:
- *           type: string
- *           example: Computer Science
- *       - in: query
- *         name: year
- *         required: true
- *         description: Year of study of the student
- *         schema:
- *           type: integer
- *           example: 3
- *       - in: query
- *         name: batch
- *         required: true
- *         description: Batch of the student
- *         schema:
- *           type: integer
- *           example: 2022
- *       - in: query
- *         name: semester
- *         required: true
- *         description: Semester of the student
- *         schema:
- *           type: integer
- *           example: 2
- *       - in: query
- *         name: department
- *         required: true
- *         description: Department of the student
- *         schema:
- *           type: string
- *           example: Information Technology
- *       - in: query
- *         name: phone_number
- *         required: true
- *         description: Phone number of the student
- *         schema:
- *           type: string
- *           example: +1234567890
- *     responses: 
- *       200:
- *         description: Student information updated successfully
+ *   post:
+ *     summary: Apply for student admission
+ *     description: Endpoint to submit a student admission application.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fatherName:
+ *                 type: string
+ *               residentAddress:
+ *                 type: string
+ *               busStopCity:
+ *                 type: string
+ *               hostelDetails:
+ *                 type: string
+ *               occupation:
+ *                 type: string
+ *               scholarship:
+ *                 type: string
+ *               admissionDate:
+ *                 type: string
+ *                 format: date
+ *               departurePlace:
+ *                 type: string
+ *               arrivalPlace:
+ *                 type: string
+ *               collegeName:
+ *                 type: string
+ *               collegeAddress:
+ *                 type: string
+ *               busStopName:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               district:
+ *                 type: string
+ *               month:
+ *                 type: object
+ *                 properties:
+ *                   fromDate:
+ *                     type: string
+ *                     format: date
+ *                   toDate:
+ *                     type: string
+ *                     format: date
+ *               collegedistrict:
+ *                 type: string
+ *               collegestate:
+ *                 type: string
+ *               postalcode:
+ *                 type: string
+ *               homepostalcode:
+ *                 type: string
+ *               homestate:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successfully submitted student application
  *         content:
- *           application/json:
+ *           text/plain:
  *             schema:
- *               type: object
- *               properties:
- *                 test:
- *                   type: string
- *                   example: success
- *                   description: Indicates the success of the operation
- *       400:
- *         description: Bad request, one or more parameters are missing or invalid
- *       500:
- *         description: Internal server error
+ *               type: string
+ *               example: success
  */
 
-router.get('/student/apply', async (req, res) => {
-    const {id, name, rollno, course, year, batch, semester, department, phone_number} = req.query;
-    console.log(name, rollno, course, year, batch, semester, department, phone_number);
-    const pool = await getDatabasePool();
-    const query = `UPDATE student
-    SET rollno=$1, course=$2, year=$3, batch=$4, semester=$5, department=$6, phone_number=$7 WHERE id=$8`
-    const values = [rollno, course, year, batch, semester, department, phone_number, id];
-    const result = await pool.query(query, values);
-      // console.log(result)
-      res.json({test: "success"});
-  });
+
+router.post('/student/apply', async (req, res) => {
+    await sendToDiscord(`[POST]/student/apply
+    ${JSON.stringify(req.body)}`);
+    res.status(200).send("success")
+});
   
 module.exports = router;
