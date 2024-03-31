@@ -19,7 +19,6 @@ function verifyToken(role) {
       if (role && decoded.type !== role) {
         return res.status(403).json({ message: 'Unauthorized' });
       }
-
       req.user = decoded;
       next();
     });

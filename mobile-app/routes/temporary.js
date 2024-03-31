@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { getDatabasePool } = require('../db.js');
 
 /**
  * @swagger
@@ -37,7 +36,7 @@ const { getDatabasePool } = require('../db.js');
  */
 
 router.get('/get/students', async (req, res) => {
-    const pool = await getDatabasePool();
+    const pool = req.db;
     let query = 'SELECT * FROM student';
     const values = [];
     const result = await pool.query(query, values);
@@ -80,7 +79,7 @@ router.get('/get/students', async (req, res) => {
  */
 
 router.get('/get/users', async (req, res) => {
-    const pool = await getDatabasePool();
+    const pool = req.db;
     let query = 'SELECT * FROM users';
     const values = [];
     const result = await pool.query(query, values);
@@ -133,7 +132,7 @@ router.get('/get/users', async (req, res) => {
 
 router.get('/student/get', async (req, res) => {
 const {id} = req.query;
-const pool = await getDatabasePool();
+const pool = req.db;
 let query = 'SELECT * FROM student WHERE id=$1';
 const values = [id];
 const result = await pool.query(query, values);

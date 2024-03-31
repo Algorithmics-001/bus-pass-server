@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { getDatabasePool } = require('../db.js');
 
 function checkMissingFields(query) {
     const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
@@ -24,36 +23,109 @@ function checkMissingFields(query) {
   }
 /**
  * @swagger
- * tags:
- *   name: User Management
- *   description: Simple account creation, deletion, login etc.
  * /signup:
  *   post:
- *     summary: simple signup endpoint
- *     tags: [SignUp]
+ *     summary: Signup endpoint for creating a new user account.
+ *     description: This endpoint allows users to sign up by providing their information.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/SignupData'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               course:
+ *                 type: string
+ *               year:
+ *                 type: integer
+ *               batch:
+ *                 type: integer
+ *               semester:
+ *                 type: integer
+ *               department:
+ *                 type: string
+ *               aadhar_number:
+ *                 type: string
+ *               college:
+ *                 type: string
+ *               phone_number:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               rollno:
+ *                 type: integer
+ *               father_name:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               admission_date:
+ *                 type: string
+ *             example:
+ *               name: Inderpreet Singh
+ *               course: CSE
+ *               year: 2
+ *               batch: 2024
+ *               semester: 1
+ *               department: Engineering
+ *               aadhar_number: 123456789012
+ *               college: ABC University
+ *               phone_number: +1234567890
+ *               password: password123
+ *               email: john.doe123@example.com
+ *               rollno: 123
+ *               father_name: Amrinder Singh
+ *               address: 123 Street, City, Country
+ *               admission_date: 2024-04-01
  *     responses:
- *       200:
- *         description: Congratulations, Account Created Successfully!
+ *       '200':
+ *         description: Successfully created a new account.
  *         content:
  *           application/json:
- *             example:
- *              message: Congratulations, Account Created Successfully!
- *              id: 132456
- *       500:
- *         description: Some server error
- *
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Congratulations, Account Created Successfully!
+ *                 id:
+ *                   type: integer
+ *                   example: 123
+ *       '500':
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal Server Error
  */
 router.post('/signup', async (req, res) => {
-    const { name, email, password, course, batch, semester, rollno, department, phone } = req.body;
-    fields = checkMissingFields(req.body);
-    if(fields.status==true) {
-    const pool = await getDatabasePool();
+  const {
+    name,
+    course,
+    year,
+    batch,
+    semester,
+    department,
+    aadhar_number,
+    college,
+    phone_number,
+    password,
+    email,
+    rollno,
+    father_name,
+    address,
+    admission_date
+} = req.body;
+    // fields = checkMissingFields(req.body);
+    if(true) {
+    const pool = req.db;
     try {
       const userExistQuery = 'SELECT * FROM users WHERE username = $1';
       const userExistValues = [email];
@@ -73,8 +145,43 @@ router.post('/signup', async (req, res) => {
     const { rows } = await pool.query(insertUserQuery, insertUserValues);
     const userid = rows[0].userid;
     console.log(userid)
+
+
+    const query = `INSERT INTO student(
+      name,
+      course,
+      year,
+      batch,
+      semester,
+      department,
+      aadhar_number,
+      college,
+      phone_number,
+      rollno,
+      userid,
+      father_name,
+      address,
+      admission_date)
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,10,11,12,13,14);
+`;
+const parameters = [
+    name,
+    course,
+    year,
+    batch,
+    semester,
+    department,
+    aadhar_number,
+    college,
+    phone_number,
+    rollno,
+    userid,
+    father_name,
+    address,
+    admission_date
+];
     const insertStudentQuery = 'INSERT INTO student(name, course, batch, semester, rollno, department, phone_number, userid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
-    const insertStudentValues = [name, course, batch, semester, rollno, department, phone, userid];
+    const insertStudentValues = [name, course, batch, semester, rollno, department, phone_number, userid];
     await pool.query(insertStudentQuery, insertStudentValues);
       res.status(200).send({
         message: 'Congratulations, Account Created Successfully!',

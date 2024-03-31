@@ -21,10 +21,10 @@ async function sendToDiscord(message) {
 
 /**
  * @swagger
- * /student/apply:
+ * /student/update:
  *   post:
- *     summary: Apply for student admission
- *     description: Endpoint to submit a student admission application.
+ *     summary: Update student information
+ *     description: Update student details in the database.
  *     requestBody:
  *       required: true
  *       content:
@@ -32,57 +32,82 @@ async function sendToDiscord(message) {
  *           schema:
  *             type: object
  *             properties:
- *               fatherName:
+ *               name:
  *                 type: string
- *               residentAddress:
+ *                 description: The name of the student.
+ *                 example: John Doe
+ *               course:
  *                 type: string
- *               busStopCity:
+ *                 description: The course enrolled by the student.
+ *                 example: Computer Science
+ *               year:
+ *                 type: integer
+ *                 description: The current academic year of the student.
+ *                 example: 2
+ *               batch:
+ *                 type: integer
+ *                 description: The batch the student belongs to.
+ *                 example: 2023
+ *               semester:
+ *                 type: integer
+ *                 description: The current semester of the student.
+ *                 example: 4
+ *               department:
  *                 type: string
- *               hostelDetails:
+ *                 description: The department of the student.
+ *                 example: Engineering
+ *               aadhar_number:
  *                 type: string
- *               occupation:
+ *                 description: The Aadhar number of the student.
+ *                 example: 1234 5678 9012
+ *               bus_pass:
+ *                 type: boolean
+ *                 description: Indicates if the student has a bus pass.
+ *                 example: true
+ *               college:
  *                 type: string
- *               scholarship:
+ *                 description: The college the student is enrolled in.
+ *                 example: ABC College
+ *               form:
  *                 type: string
- *               admissionDate:
+ *                 description: The form submitted by the student.
+ *                 example: Admission Form 2024
+ *               phone_number:
+ *                 type: string
+ *                 description: The phone number of the student.
+ *                 example: +1234567890
+ *               password:
+ *                 type: string
+ *                 description: The password for student authentication.
+ *                 example: strongpassword
+ *               email:
+ *                 type: string
+ *                 description: The email address of the student.
+ *                 example: john.doe@example.com
+ *               rollno:
+ *                 type: string
+ *                 description: The roll number of the student.
+ *                 example: ABC12345
+ *               userid:
+ *                 type: string
+ *                 description: The user ID of the student.
+ *                 example: johndoe123
+ *               father_name:
+ *                 type: string
+ *                 description: The name of the student's father.
+ *                 example: Michael Doe
+ *               address:
+ *                 type: string
+ *                 description: The address of the student.
+ *                 example: 123 Main Street, City, Country
+ *               admission_date:
  *                 type: string
  *                 format: date
- *               departurePlace:
- *                 type: string
- *               arrivalPlace:
- *                 type: string
- *               collegeName:
- *                 type: string
- *               collegeAddress:
- *                 type: string
- *               busStopName:
- *                 type: string
- *               state:
- *                 type: string
- *               district:
- *                 type: string
- *               month:
- *                 type: object
- *                 properties:
- *                   fromDate:
- *                     type: string
- *                     format: date
- *                   toDate:
- *                     type: string
- *                     format: date
- *               collegedistrict:
- *                 type: string
- *               collegestate:
- *                 type: string
- *               postalcode:
- *                 type: string
- *               homepostalcode:
- *                 type: string
- *               homestate:
- *                 type: string
+ *                 description: The admission date of the student.
+ *                 example: 2024-03-31
  *     responses:
- *       '200':
- *         description: Successfully submitted student application
+ *       200:
+ *         description: Success message indicating the student information was updated successfully.
  *         content:
  *           text/plain:
  *             schema:
@@ -91,9 +116,64 @@ async function sendToDiscord(message) {
  */
 
 
-router.post('/student/apply', async (req, res) => {
-    await sendToDiscord(`[POST]/student/apply
-    ${JSON.stringify(req.body)}`);
+
+router.post('/student/update', async (req, res) => {
+    const {
+        name,
+        course,
+        year,
+        batch,
+        semester,
+        department,
+        aadhar_number,
+        bus_pass,
+        college,
+        form,
+        phone_number,
+        password,
+        email,
+        rollno,
+        userid,
+        father_name,
+        address,
+        admission_date
+    } = req.body;
+
+    const query = `UPDATE student SET
+        name=$1,
+        course=$2,
+        year=$3,
+        batch=$4,
+        semester=$5,
+        department=$6,
+        aadhar_number=$7,
+        college=$8,
+        phone_number=$9,
+        rollno=$10,
+        father_name=$12,
+        address=$13,
+        admission_date=$14
+
+        WHERE userid=$11
+    `;
+    const parameters = [
+        name,
+        course,
+        year,
+        batch,
+        semester,
+        department,
+        aadhar_number,
+        college,
+        phone_number,
+        rollno,
+        userid,
+        father_name,
+        address,
+        admission_date
+    ];
+
+    const result = req.db.query(query, parameters);
     res.status(200).send("success")
 });
   

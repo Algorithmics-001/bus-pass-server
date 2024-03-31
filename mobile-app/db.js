@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 require('dotenv').config();
+
 async function getDatabasePool() {
     const pool = new Pool({
         user: process.env.POSTGRESQL_USERNAME,
@@ -12,19 +13,17 @@ async function getDatabasePool() {
     return pool;
 }
 
-// Example query
-// (async () => {
-
-//     const poool = await getDatabasePool();
-//     poool.query('SELECT * FROM test', (err, res) => {
-//         if (err) {
-//             console.error('Error executing query', err.stack);
-//         } else {
-//             console.log('Connected to PostgreSQL at', res.rows);
-//         }
-//     });
-// })();
+// Middleware to attach the database pool to the request object
+async function attachDatabasePool(req, res, next) {
+    try {
+        const pool = await getDatabasePool();
+        req.db = pool;
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
 
 module.exports = {
-    getDatabasePool
+    attachDatabasePool
 };

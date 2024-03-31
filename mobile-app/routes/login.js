@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { getDatabasePool } = require('../db.js');
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET_KEY;
 const {verifyToken} = require('../modules/auth.js');
@@ -60,8 +59,9 @@ function checkMissingFields(query) {
  *
  */
 router.post('/login', async (req, res) => {
-  const pool = await getDatabasePool();
+  const pool = req.db;
   const loginData = req.body;
+  console.log(req.body);
   
   try {
       const query = {
@@ -75,9 +75,9 @@ router.post('/login', async (req, res) => {
           const id = result.rows[0].userid;
           const user = result.rows[0];
           const token = generateToken(user);
-          // res.cookie('token', token, { 
-          //   httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
-          // });
+          res.cookie('token', token, { 
+            httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
+          });
           return res.status(200).send({
               message: `Logged in successfully! username: ${username}`,
               name: username,
@@ -127,7 +127,8 @@ router.post('/logout', (req, res) => {
 
   
 router.get('/protected', verifyToken('student'), (req, res) => {
-  res.json({ message: 'Protected route accessed successfully' });
+  console.log(req.user);
+  res.json({ message: `Protected route accessed successfully by: ${req.user.name}, email: ${req.user.email}, type: ${req.user.type}` });
 });
 
   

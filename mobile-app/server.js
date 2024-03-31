@@ -4,7 +4,6 @@ const otpGenerator = require('./modules/otpgenerator.js')
 const cors = require('cors');
 const { redirect } = require('react-router-dom');
 const app = express();
-const { getDatabasePool } = require('./db.js');
 const   bodyParser = require("body-parser");
 const signupRouter = require('./routes/signup.js'); 
 const tempRouter = require('./routes/temporary.js');
@@ -13,7 +12,8 @@ const applyRouter = require('./routes/apply.js');
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const cookieParser = require('cookie-parser');
-
+const { attachDatabasePool } = require('./db.js');
+app.use(attachDatabasePool);
 app.use(cors());
 const options = {
   definition: {
