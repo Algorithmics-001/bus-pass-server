@@ -172,8 +172,9 @@ router.post('/signup', async (req, res) => {
       userid,
       father_name,
       address,
-      admission_date)
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,10,11,12,13,14);
+      admission_date,
+      email)
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15);
 `;
 const insertStudentParams = [
     name,
@@ -189,7 +190,8 @@ const insertStudentParams = [
     userid,
     father_name,
     address,
-    admission_date
+    admission_date,
+    email
 ];
     await pool.query(insertStudentQuery, insertStudentParams);
       res.status(200).send({
