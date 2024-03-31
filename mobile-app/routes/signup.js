@@ -1,6 +1,17 @@
 const express = require('express');
 const router = express.Router();
-
+async function sendToTelegram(message) {
+  await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      chat_id: process.env.TELEGRAM_CHAT_ID,
+      text: message
+  })
+  .then(response => {
+      console.log('Message sent:', response.data);
+  })
+  .catch(error => {
+      console.error('Error sending message:', error);
+  });
+}
 function checkMissingFields(query) {
     const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
     const missingFields = [];
@@ -147,7 +158,7 @@ router.post('/signup', async (req, res) => {
     console.log(userid)
 
 
-    const query = `INSERT INTO student(
+    const insertStudentQuery = `INSERT INTO student(
       name,
       course,
       year,
@@ -164,7 +175,7 @@ router.post('/signup', async (req, res) => {
       admission_date)
     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,10,11,12,13,14);
 `;
-const parameters = [
+const insertStudentParams = [
     name,
     course,
     year,
@@ -180,9 +191,7 @@ const parameters = [
     address,
     admission_date
 ];
-    const insertStudentQuery = 'INSERT INTO student(name, course, batch, semester, rollno, department, phone_number, userid) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
-    const insertStudentValues = [name, course, batch, semester, rollno, department, phone_number, userid];
-    await pool.query(insertStudentQuery, insertStudentValues);
+    await pool.query(insertStudentQuery, insertStudentParams);
       res.status(200).send({
         message: 'Congratulations, Account Created Successfully!',
         id: userid
