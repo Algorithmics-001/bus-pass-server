@@ -7,7 +7,7 @@ const {verifyToken} = require('../modules/auth.js');
 /**
  * @swagger
  * /get/student:
- *   post:
+ *   get:
  *     summary: Retrieve student information
  *     description: Retrieves information about the logged-in student.
  *     tags:
@@ -65,7 +65,7 @@ const {verifyToken} = require('../modules/auth.js');
  */
 
 
-router.post('/get/student',verifyToken('student'), async (req, res) => {
+router.get('/get/student',verifyToken('student'), async (req, res) => {
     const id = req.user.id;
     console.log(id);
     const pool = req.db;

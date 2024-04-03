@@ -1,21 +1,35 @@
-require('dotenv').config();
+require('dotenv').config(); // NEVER forget to load dotenv.
+
 const express = require('express');
-const otpGenerator = require('./modules/otpgenerator.js')
-const cors = require('cors');
-const { redirect } = require('react-router-dom');
 const app = express();
-const   bodyParser = require("body-parser");
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+app.use(cors()); // for cross origin
+app.use(express.json()); //for res.json (if im not wrong)
+app.use(cookieParser()); //to parse cookies. usage: req.cookies.COOKIE_NAME
+
+//db config
+const { attachDatabasePool } = require('./db.js');
+app.use(attachDatabasePool); //usage example: await req.db.query('SELECT 1');
+
+//routers from /routes folder
 const signupRouter = require('./routes/signup.js'); 
 const tempRouter = require('./routes/temporary.js');
 const loginRouter = require('./routes/login.js');
 const applyRouter = require('./routes/apply.js');
 const getRouter = require('./routes/getdata.js');
+app.use('/', signupRouter);
+app.use('/', loginRouter);
+app.use('/', tempRouter);
+app.use('/', applyRouter);
+app.use('/', getRouter);
+
+
+
+
+//swagger configuration
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const cookieParser = require('cookie-parser');
-const { attachDatabasePool } = require('./db.js');
-app.use(attachDatabasePool);
-app.use(cors());
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -33,8 +47,6 @@ const options = {
   },
   apis: ["./routes/*"],
 };
-
-
 const specs = swaggerJsdoc(options);
 app.use(
   "/api-docs",
@@ -42,31 +54,7 @@ app.use(
   swaggerUi.setup(specs)
 );
 
-app.use(express.json());
-
-app.use(cookieParser());
-
-app.get('/message', (req, res) => {
-  res.json({ message: "Search Projects From Database" });
-});
-app.use('/', signupRouter);
-app.use('/', loginRouter);
-app.use('/', tempRouter);
-app.use('/', applyRouter);
-app.use('/', getRouter);
-
-
-
-
+// running the server
 app.listen(process.env.BUSPASS_SERVER_MOBILE_API_PORT, () => {
   console.log(`Server is running on port 8000.`);
 });
-
-
-/*
-  let query = 'SELECT * FROM student';
-  const values = [];
-  const result = await pool.query(query, values);
-  // console.log(result)
-  res.json({rows: result.rows});
-*/
