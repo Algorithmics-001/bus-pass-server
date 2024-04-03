@@ -117,7 +117,7 @@ router.get('/bus-service/requests', async (req, res) => {
           "phone": 4563217890,
         }
     ];
-    res.status(200).send(test);
+    res.status(200).json(test);
 });
 
 router.get('/college/requests', async (req, res) => {
@@ -233,7 +233,7 @@ router.get('/college/requests', async (req, res) => {
           "phone": 4563217890,
         }
     ];
-    res.status(200).send(test);
+    res.status(200).json(test);
 });
 
 router.get('/college/dashboard', (req, res) => {
@@ -244,7 +244,7 @@ router.get('/college/dashboard', (req, res) => {
         {number:100, text:"Students account Approved"},
         {number:100, text:"huehue"}
     ]
-    res.status(200).send(test);
+    res.status(200).json(test);
 });
 
 router.get('/bus-service/dashboard', (req, res) => {
@@ -255,7 +255,7 @@ router.get('/bus-service/dashboard', (req, res) => {
         {number:100, text:"Students account Approved"},
         {number:100, text:"huehue"}
     ]
-    res.status(200).send(test);
+    res.status(200).json(test);
 });
 
 module.exports = router;
