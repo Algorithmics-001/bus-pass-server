@@ -60,7 +60,7 @@ function checkMissingFields(query) {
  *               aadhar_number:
  *                 type: string
  *               college:
- *                 type: string
+ *                 type: integer
  *               phone_number:
  *                 type: string
  *               password:
@@ -83,7 +83,7 @@ function checkMissingFields(query) {
  *               semester: 1
  *               department: Engineering
  *               aadhar_number: 123456789012
- *               college: ABC University
+ *               college: 69
  *               phone_number: +1234567890
  *               password: password123
  *               email: john.doe123@example.com
@@ -155,7 +155,7 @@ router.post('/signup', async (req, res) => {
     const insertUserValues = [email, password, name, 'student'];
     const { rows } = await pool.query(insertUserQuery, insertUserValues);
     const userid = rows[0].userid;
-    console.log(userid)
+    // console.log(userid)
 
 
     const insertStudentQuery = `INSERT INTO student(

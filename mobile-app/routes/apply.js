@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { getDatabasePool } = require('../db.js');
 const {verifyToken} = require('../modules/auth.js');
 const axios = require('axios');
 

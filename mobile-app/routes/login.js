@@ -61,16 +61,14 @@ function checkMissingFields(query) {
 router.post('/login', async (req, res) => {
   const pool = req.db;
   const loginData = req.body;
-  console.log(req.body);
   
   try {
       const query = {
           text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
           values: [loginData.email, loginData.password]
       };
-
       const result = await pool.query(query);
-      if (result.rows[0].password_correct == true) {
+      if (result.rowCount == 1 && result.rows[0].password_correct == true) {
           const username = result.rows[0].name;
           const id = result.rows[0].userid;
           const user = result.rows[0];
@@ -149,7 +147,7 @@ router.get('/protected', verifyToken('student'), (req, res) => {
  *           type: string
  *           description: Password for the user's account.
  *       example:
- *         email: test@example.com
- *         password: Str0Ngp@ssWO4D
+ *         email: john.doe123@example.com
+ *         password: password123
 */
 module.exports = router;

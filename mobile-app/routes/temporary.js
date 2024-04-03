@@ -87,59 +87,6 @@ router.get('/get/users', async (req, res) => {
     res.status(200).send({rows: result.rows});
   });
 
-/**
- * @swagger
- * tags:
- *   name: debug
- * /student/get:
- *   get:
- *     summary: Get student information by ID from the database (for debug purposes)
- *     tags: [debug]
- *     parameters:
- *       - in: query
- *         name: id
- *         required: true
- *         description: ID of the student to retrieve
- *         schema:
- *           type: integer
- *     responses: 
- *       200:
- *         description: Student information retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 rows:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         description: ID of the student
- *                       name:
- *                         type: string
- *                         description: Name of the student
- *                       age:
- *                         type: integer
- *                         description: Age of the student
- *       400:
- *         description: Bad request, ID parameter is missing or invalid
- *       500:
- *         description: Internal server error
- */
-
-router.get('/student/get', async (req, res) => {
-const {id} = req.query;
-const pool = req.db;
-let query = 'SELECT * FROM student WHERE id=$1';
-const values = [id];
-const result = await pool.query(query, values);
-console.log(result)
-res.json({rows: result.rows});
-});
-  
 module.exports = router;
 
 /**
