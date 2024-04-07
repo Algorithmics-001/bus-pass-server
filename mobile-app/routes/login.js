@@ -90,10 +90,7 @@ router.post('/login', async (req, res) => {
       }
   } catch (e) {
       console.error('Error executing query:', e);
-      return res.status(500).send({
-          message: "An error occurred.",
-          type: "error"
-      });
+      return res.status(500).send({e});
   }
 });
 

@@ -12,6 +12,21 @@ app.use(cookieParser()); //to parse cookies. usage: req.cookies.COOKIE_NAME
 const { attachDatabasePool } = require('./db.js');
 app.use(attachDatabasePool); //usage example: await req.db.query('SELECT 1');
 
+// module to check for missing fields, providing it with an array.
+const {attachCheckFields} = require('./modules/checkfields.js');
+app.use(attachCheckFields);
+/**
+ * Usage:
+ * const requiredFields = ['field1', 'field2', 'etc'];
+ * const fields = req.checkFields(req.body, requiredFields);
+ * Response upon missing:
+ * {
+ *   status: false,
+ *   message: 'Missing fields: batch, aadhar_number, college'
+ * }
+**/
+
+
 //routers from /routes folder
 const signupRouter = require('./routes/signup.js'); 
 const tempRouter = require('./routes/temporary.js');

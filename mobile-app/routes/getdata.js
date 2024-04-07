@@ -97,7 +97,7 @@ router.get('/get/student',verifyToken('student'), async (req, res) => {
 
       } catch (error) {
         console.error('Error getting user:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send(error);
       }
 });
 

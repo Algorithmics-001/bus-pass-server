@@ -12,26 +12,6 @@ async function sendToTelegram(message) {
       console.error('Error sending message:', error);
   });
 }
-function checkMissingFields(query) {
-    const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
-    const missingFields = [];
-    requiredFields.forEach(field => {
-      if (!query[field]) {
-        missingFields.push(field);
-      }
-    });
-  
-    if (missingFields.length > 0) {
-      return {
-        status: false,
-        message: `Missing fields: ${missingFields.join(', ')}`
-      };
-    } else {
-      return {
-        status: true
-      };
-    }
-  }
 /**
  * @swagger
  * /signup:
@@ -134,8 +114,25 @@ router.post('/signup', async (req, res) => {
     address,
     admission_date
 } = req.body;
-    // fields = checkMissingFields(req.body);
-    if(true) {
+    const requiredFields = [
+      'name',
+      'course',
+      'year',
+      'batch',
+      'semester',
+      'department',
+      'aadhar_number',
+      'college',
+      'phone_number',
+      'password',
+      'email',
+      'rollno',
+      'father_name',
+      'address',
+      'admission_date'
+    ];
+    const fields = req.checkFields(req.body, requiredFields);
+    if(fields.status==true) {
     const pool = req.db;
     try {
       const userExistQuery = 'SELECT * FROM users WHERE username = $1';
@@ -201,7 +198,7 @@ const insertStudentParams = [
   
     } catch (error) {
       console.error('Error saving user:', error);
-      res.status(500).send('Internal Server Error');
+      res.status(500).send(error);
     }
   
     } else {
@@ -211,9 +208,6 @@ const insertStudentParams = [
     }
   });
 
-
-
-  
 /**
  * @swagger
  * components:
