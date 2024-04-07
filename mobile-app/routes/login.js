@@ -8,28 +8,6 @@ const {verifyToken} = require('../modules/auth.js');
 function generateToken(user) {
   return jwt.sign({id: user.userid, name: user.name,email: user.username , type: user.usertype}, secretKey, { expiresIn: '1h' });
 }
-
-
-function checkMissingFields(query) {
-    const requiredFields = ['name', 'email', 'password', 'course', 'batch', 'semester', 'rollno', 'department', 'phone'];
-    const missingFields = [];
-    requiredFields.forEach(field => {
-      if (!query[field]) {
-        missingFields.push(field);
-      }
-    });
-  
-    if (missingFields.length > 0) {
-      return {
-        status: false,
-        message: `Missing fields: ${missingFields.join(', ')}`
-      };
-    } else {
-      return {
-        status: true
-      };
-    }
-  }
 /**
  * @swagger
  * tags:
@@ -61,7 +39,11 @@ function checkMissingFields(query) {
 router.post('/login', async (req, res) => {
   const pool = req.db;
   const loginData = req.body;
-  
+  const requiredFields = ['email', 'password'];
+  const fields = req.checkFields(req.body, requiredFields);
+  if(fields.status==false) {
+    return res.status(500).send(fields.message);
+  }
   try {
       const query = {
           text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",

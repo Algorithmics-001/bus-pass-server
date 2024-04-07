@@ -116,7 +116,7 @@ async function sendToDiscord(message) {
 
 
 
-router.post('/student/update', async (req, res) => {
+router.post('/student/update',verifyToken('student') , async (req, res) => {
     const {
         name,
         course,
@@ -125,18 +125,41 @@ router.post('/student/update', async (req, res) => {
         semester,
         department,
         aadhar_number,
-        bus_pass,
         college,
-        form,
         phone_number,
-        password,
-        email,
         rollno,
         userid,
         father_name,
         address,
         admission_date
     } = req.body;
+    if(userid != req.user.id) {
+        return res.status(403).send({"message":"Trying to update another user as student."});
+    }
+    const requiredFields = [
+        'name',
+        'course',
+        'year',
+        'batch',
+        'semester',
+        'department',
+        'aadhar_number',
+        'bus_pass',
+        'college',
+        'form',
+        'phone_number',
+        'password',
+        'email',
+        'rollno',
+        'userid',
+        'father_name',
+        'address',
+        'admission_date'
+    ];
+    const fields = req.checkFields(req.body, requiredFields);
+    if(fields.status==false) {
+        return res.status(500).send(fields.message);
+    }
 
     const query = `UPDATE student SET
         name=$1,
@@ -166,14 +189,17 @@ router.post('/student/update', async (req, res) => {
         college,
         phone_number,
         rollno,
-        userid,
+        req.user.id,
         father_name,
         address,
         admission_date
     ];
-
-    const result = req.db.query(query, parameters);
-    res.status(200).send("success")
+    try{ 
+        const result = req.db.query(query, parameters);
+        res.status(200).send("success")
+    } catch(e) {
+        res.status(500).send(e);
+    }
 });
   
 module.exports = router;
