@@ -52,9 +52,14 @@ router.post('/login', async (req, res) => {
       const result = await pool.query(query);
       if (result.rowCount == 1 && result.rows[0].password_correct == true) {
 
-        if(result.rows[0].usertype == 'unapproved') {
+        if(result.rows[0].usertype == 'applied') {
           return res.status(403).send({error: "Account not yet approved."});
         }
+        if(result.rows[0].usertype == 'rejected') {
+          return res.status(403).send({error: "Your account requests was rejected by the college."});
+        }
+
+        if(result.rows[0].usertype == 'student') {
           const username = result.rows[0].name;
           const id = result.rows[0].userid;
           const user = result.rows[0];
@@ -68,6 +73,7 @@ router.post('/login', async (req, res) => {
               id: id,
               token: token
           });
+        }
       } else {
           return res.status(401).send({
               message: "Username or Password invalid.",
