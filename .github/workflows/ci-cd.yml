@@ -10,7 +10,11 @@ jobs:
     runs-on: amr
     steps:
       - name: stop the server if running
-        run: sudo systemctl stop bus-pass-api
+        run: |
+          sudo systemctl stop bus-pass-mobile-api
+          sudo systemctl stop bus-pass-college-api
+          sudo systemctl stop bus-pass-service-api
+          sudo systemctl stop bus-pass-admin-api
 
       - name: Update the repo
         working-directory: /home/github/bus-pass-server/
