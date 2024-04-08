@@ -166,9 +166,9 @@ const insertCollegeParams = [
  *         name:
  *           type: string
  *           description: Name of the student.
- *         email:
+ *         username:
  *           type: string
- *           description: Email address of the student.
+ *           description: username address of the student.
  *         password:
  *           type: string
  *           description: Password for the student's account.

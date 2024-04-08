@@ -39,7 +39,7 @@ function generateToken(user) {
 router.post('/login', async (req, res) => {
   const pool = req.db;
   const loginData = req.body;
-  const requiredFields = ['email', 'password'];
+  const requiredFields = ['username', 'password'];
   const fields = req.checkFields(requiredFields);
   if(fields.status==false) {
     return res.status(500).send(fields.message);
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
   try {
       const query = {
           text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1 AND usertype='college';",
-          values: [loginData.email, loginData.password]
+          values: [loginData.username, loginData.password]
       };
       const result = await pool.query(query);
       if (result.rowCount == 1 && result.rows[0].password_correct == true) {
@@ -134,17 +134,17 @@ router.get('/protected', verifyToken('college'), (req, res) => {
  *     LoginData:
  *       type: object
  *       required:
- *         - email
+ *         - username
  *         - password
  *       properties:
- *         email:
+ *         username:
  *           type: string
- *           description: Email address of the user.
+ *           description: username of the user.
  *         password:
  *           type: string
  *           description: Password for the user's account.
  *       example:
- *         email: gne
+ *         username: gne
  *         password: password123
 */
 module.exports = router;
