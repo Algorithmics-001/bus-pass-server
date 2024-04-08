@@ -87,10 +87,19 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
     const client = await req.db.connect();
     try {
         await client.query('BEGIN'); // Begin transaction
-        const renewalQuery = 'SELECT bus_pass_id FROM student WHERE userid=$1'
+        const renewalQuery = `SELECT 
+        EXISTS(SELECT 1 FROM student WHERE userid=$1 AND bus_pass_id IS NULL) AS is_bus_pass_id_null,
+        CASE 
+            WHEN bus_pass_id IS NULL THEN 'bus_pass_id is NULL'
+            ELSE bus_pass_id::text -- converting bus_pass_id to text for uniformity in return types
+        END AS pass_id
+    FROM student 
+    WHERE userid=$1;    
+      `
         const renewalParams = [req.user.id];
         const renewal = await client.query(renewalQuery, renewalParams);
-        if(renewal.rowCount = 0) {
+        console.log(renewal);
+        if(renewal.rows[0].is_bus_pass_id_null == true) {
             const formQuery = `INSERT INTO form(
                 status,
                 from_bus_stop,
@@ -98,7 +107,8 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
                 renewal,
                 bus_deport_id,
                 from_date,
-                to_date
+                to_date,
+                student_id
                 ) VALUES($1, $2, $3, $4, $5, $6, $7)
                 RETURNING id`;
             const formParameters = [
@@ -108,7 +118,8 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
                 "false", // Boolean. If its a renewal pass or normal.
                 bus_deport_id,
                 from_date,
-                to_date
+                to_date,
+                req.user.id
             ];
             var form_query = await client.query(formQuery, formParameters);
         } else {
@@ -120,7 +131,8 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
                 bus_deport_id,
                 from_date,
                 to_date,
-                previous_recipt_number
+                previous_recipt_number,
+                student_id
                 ) VALUES($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING id`;
             const formParameters = [
@@ -131,7 +143,8 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
                 bus_deport_id,
                 from_date,
                 to_date,
-                renewal.rows[0].bus_pass_id
+                renewal.rows[0].pass_id,
+                req.user.id
             ];
             var form_query = await client.query(formQuery, formParameters);
         }
