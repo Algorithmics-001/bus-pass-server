@@ -64,5 +64,5 @@ app.use(
 
 // running the server
 app.listen(process.env.BUSPASS_SERVER_ADMIN_API_PORT, () => {
-  console.log(`Server is running on port 8000.`);
+  console.log(`Server is running on port ${process.env.BUSPASS_SERVER_ADMIN_API_PORT}.`);
 });
