@@ -144,7 +144,7 @@ router.get('/protected', verifyToken('college'), (req, res) => {
  *           type: string
  *           description: Password for the user's account.
  *       example:
- *         email: john.doe123@example.com
+ *         email: gne
  *         password: password123
 */
 module.exports = router;

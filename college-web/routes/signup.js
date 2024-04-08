@@ -120,7 +120,7 @@ router.post('/signup', async (req, res) => {
      address,
      affiliation_number
     )
-    VALUES($1,$2,$3,$4,$5);
+    VALUES($1,$2,$3,$4,$5) RETURNING id;
 `;
 const insertCollegeParams = [
     name,
