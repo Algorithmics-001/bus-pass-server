@@ -236,26 +236,5 @@ router.get('/college/requests', async (req, res) => {
     res.status(200).json(test);
 });
 
-router.get('/college/dashboard', (req, res) => {
-    const test = [
-        {number:100, text:"Students Accepted"},
-        {number:100, text:"Students Rejected"},
-        {number:100, text:"Students Applied"},
-        {number:100, text:"Students account Approved"},
-        {number:100, text:"huehue"}
-    ]
-    res.status(200).json(test);
-});
-
-router.get('/bus-service/dashboard', (req, res) => {
-    const test = [
-        {number:100, text:"Students Accepted"},
-        {number:100, text:"Students Rejected"},
-        {number:100, text:"Students Applied"},
-        {number:100, text:"Students account Approved"},
-        {number:100, text:"huehue"}
-    ]
-    res.status(200).json(test);
-});
 
 module.exports = router;

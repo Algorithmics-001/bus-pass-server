@@ -8,7 +8,7 @@ const axios = require('axios');
 
 /**
  * @swagger
- * /student/apply:
+ * /mobile/student/apply:
  *   post:
  *     summary: Apply for a bus pass as a student
  *     tags:

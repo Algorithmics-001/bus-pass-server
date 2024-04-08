@@ -14,7 +14,7 @@ async function sendToTelegram(message) {
 }
 /**
  * @swagger
- * /signup:
+ * /mobile/signup:
  *   post:
  *     summary: Signup endpoint for creating a new user account.
  *     description: This endpoint allows users to sign up by providing their information.

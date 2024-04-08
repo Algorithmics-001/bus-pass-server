@@ -13,7 +13,7 @@ function generateToken(user) {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login etc.
- * /login:
+ * /mobile/login:
  *   post:
  *     summary: simple login endpoint
  *     tags: [LogIn]
@@ -81,7 +81,7 @@ router.post('/login', async (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /logout:
+ * /mobile/logout:
  *   post:
  *     summary: Logout endpoint
  *     tags: [LogOut]

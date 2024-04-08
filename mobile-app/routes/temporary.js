@@ -5,7 +5,7 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: debug
- * /get/students:
+ * /mobile/get/students:
  *   get:
  *     summary: Get all students from the database (for debug purposes)
  *     tags: [debug]
@@ -48,7 +48,7 @@ router.get('/get/students', async (req, res) => {
  * @swagger
  * tags:
  *   name: debug
- * /get/users:
+ * /mobile/get/users:
  *   get:
  *     summary: Get all users from the database (for debug purposes)
  *     tags: [debug]

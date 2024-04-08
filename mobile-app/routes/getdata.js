@@ -6,7 +6,7 @@ const {verifyToken} = require('../modules/auth.js');
 
 /**
  * @swagger
- * /get/student:
+ * /mobile/get/student:
  *   get:
  *     summary: Retrieve student information
  *     description: Retrieves information about the logged-in student.
