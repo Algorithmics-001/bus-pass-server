@@ -75,14 +75,18 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
         from_bus_stop,
         to_bus_stop,
         renewal, // Boolean. If its a renewal pass or normal.
-        bus_deport_id
+        bus_deport_id,
+        from_date,
+        to_date
     } = req.body;
 
     const requiredFields = [
         'from_bus_stop',
         'to_bus_stop',
         'renewal',
-        'bus_deport_id'
+        'bus_deport_id',
+        'from_date',
+        'to_date'
     ];
     const fields = req.checkFields(requiredFields);
     if(fields.status == false) {
@@ -97,15 +101,19 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
             from_bus_stop,
             to_bus_stop,
             renewal,
-            bus_deport_id
-            ) VALUES($1, $2, $3, $4, $5)
+            bus_deport_id,
+            from_date,
+            to_date
+            ) VALUES($1, $2, $3, $4, $5, $6, $7)
             RETURNING id`;
         const formParameters = [
             "applied",
             from_bus_stop,
             to_bus_stop,
             renewal, // Boolean. If its a renewal pass or normal.
-            bus_deport_id
+            bus_deport_id,
+            from_date,
+            to_date
         ];
         const form_query = await client.query(formQuery, formParameters);
         const pass_id = form_query.rows[0].id;
