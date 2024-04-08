@@ -28,9 +28,7 @@ app.use(attachCheckFields);
 
 
 //routers from /routes folder
-const applyRouter = require('./routes/apply.js');
 const loginRouter = require('./routes/login.js');
-app.use('/', applyRouter);
 app.use('/', loginRouter);
 
 
