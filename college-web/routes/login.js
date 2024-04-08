@@ -101,7 +101,26 @@ router.post('/logout', (req, res) => {
   res.status(200).send({ message: 'Logged out successfully' });
 });
 
-  
+/**
+ * @swagger
+ * tags:
+ *   name: User Management
+ *   description: Simple account creation, deletion, login, etc.
+ * /college/protected:
+ *   get:
+ *     summary: protectedendpoint
+ *     tags: [protected]
+ *     description: Checks if user can access protected.
+ *     responses:
+ *       200:
+ *         description: na
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: na
+ *       500:
+ *         description: Some server error
+ */
 router.get('/protected', verifyToken('college'), (req, res) => {
   console.log(req.user);
   res.json({ message: `Protected route accessed successfully by: ${req.user.name}, email: ${req.user.email}, type: ${req.user.type}` });

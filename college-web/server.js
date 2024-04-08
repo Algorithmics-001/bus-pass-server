@@ -30,8 +30,10 @@ app.use(attachCheckFields);
 //routers from /routes folder
 const applyRouter = require('./routes/apply.js');
 const loginRouter = require('./routes/login.js');
+const signupRouter = require('./routes/signup.js')
 app.use('/', applyRouter);
 app.use('/college', loginRouter);
+app.use('/college', signupRouter);
 
 
 
