@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /logout:
+ * /bus-service/logout:
  *   post:
  *     summary: Logout endpoint
  *     tags: [LogOut]
@@ -101,8 +101,29 @@ router.post('/logout', (req, res) => {
   res.status(200).send({ message: 'Logged out successfully' });
 });
 
-  
-router.get('/protected', verifyToken('bus-service'), (req, res) => {
+
+/**
+ * @swagger
+ * tags:
+ *   name: User Management
+ *   description: Simple account creation, deletion, login, etc.
+ * /bus-service/protected:
+ *   post:
+ *     summary: Protected
+ *     tags: [Protected]
+ *     description: checks the protected route
+ *     responses:
+ *       200:
+ *         description: route accessed
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: route accessed
+ *       500:
+ *         description: Some server error
+ */
+
+router.post('/protected', verifyToken('bus-service'), (req, res) => {
   console.log(req.user);
   res.json({ message: `Protected route accessed successfully by: ${req.user.name}, email: ${req.user.email}, type: ${req.user.type}` });
 });
