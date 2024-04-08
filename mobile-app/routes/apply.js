@@ -95,7 +95,7 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
         END AS pass_id
     FROM student 
     WHERE userid=$1;    
-      `
+      `;
         const renewalParams = [req.user.id];
         const renewal = await client.query(renewalQuery, renewalParams);
         console.log(renewal);
