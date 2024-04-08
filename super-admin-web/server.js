@@ -29,7 +29,7 @@ app.use(attachCheckFields);
 
 //routers from /routes folder
 const loginRouter = require('./routes/login.js');
-app.use('/', loginRouter);
+app.use('/super-admin', loginRouter);
 
 
 
@@ -55,7 +55,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-  "/api-docs",
+  "/super-admin/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );

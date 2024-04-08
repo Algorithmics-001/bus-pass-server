@@ -42,10 +42,10 @@ const options = {
   definition: {
     openapi: "3.1.0",
     info: {
-      title: "Bus Pass API documentation.",
+      title: "Bus Pass API college documentation.",
       version: "0.1.0",
       description:
-        "API documentation for the bus pass project."
+        "Bus Pass /college API."
     },
     servers: [
       {
