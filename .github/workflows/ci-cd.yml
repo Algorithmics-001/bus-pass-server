@@ -10,7 +10,6 @@ jobs:
     runs-on: amr
     steps:
       - name: stop the server if running
-        working-directory: /home/github/bus-pass-server/mobile-app/
         run: sudo systemctl stop bus-pass-api
 
       - name: Update the repo
@@ -19,7 +18,7 @@ jobs:
          git pull
 
       - name: Setup enviornment variables
-        working-directory: /home/github/bus-pass-server/mobile-app/
+        working-directory: /home/github/bus-pass-server/
         run: |
           echo "POSTGRESQL_USERNAME=\"${{ secrets.POSTGRESQL_USERNAME }}\"" > .env
           echo "POSTGRESQL_HOST=\"${{ secrets.POSTGRESQL_HOST }}\"" >> .env
@@ -32,12 +31,33 @@ jobs:
           echo "TELEGRAM_BOT_TOKEN=\"${{ secrets.TELEGRAM_BOT_TOKEN }}\"" >> .env
           echo "TELEGRAM_CHAT_ID=\"${{ secrets.TELEGRAM_CHAT_ID }}\"" >> .env
 
-      - name: Install packages
+      - name: copy enviornment variables
+        working-directory: /home/github/bus-pass-server/
+        run: |
+          cp .env mobile-app
+          cp .env college-web
+          cp .env super-admin-web
+          cp .env bus-service-web
+
+      - name: Install packages for mobile app api
         working-directory: /home/github/bus-pass-server/mobile-app/
+        run: npm i
+      - name: Install packages for bus service api
+        working-directory: /home/github/bus-pass-server/bus-service-web/
+        run: npm i
+      - name: Install packages for college web api
+        working-directory: /home/github/bus-pass-server/college-web/
+        run: npm i
+      - name: Install packages for super admin api
+        working-directory: /home/github/bus-pass-server/super-admin-web/
         run: npm i
 
       - name: Start the server
-        run: sudo systemctl restart bus-pass-api
+        run: |
+          sudo systemctl restart bus-pass-mobile-api
+          sudo systemctl restart bus-pass-college-api
+          sudo systemctl restart bus-pass-service-api
+          sudo systemctl restart bus-pass-admin-api
     
       - name: send telegram message on push
         working-directory: /home/github/
