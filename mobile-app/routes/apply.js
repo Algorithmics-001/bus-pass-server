@@ -109,7 +109,7 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
         ];
         const form_query = await client.query(formQuery, formParameters);
         const pass_id = form_query.rows[0].id;
-        const insertFormIdQuery = `UPDATE student SET form=$1 WHERE userid=$2`;
+        const insertFormIdQuery = `UPDATE student SET form_id=$1 WHERE userid=$2`;
         const insertFormIdParameters = [pass_id, req.user.id];
         const result = await client.query(insertFormIdQuery, insertFormIdParameters);
 
