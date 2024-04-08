@@ -34,12 +34,12 @@ const loginRouter = require('./routes/login.js');
 const applyRouter = require('./routes/apply.js');
 const getRouter = require('./routes/getdata.js');
 const dummyRouter = require('./routes/dummy.js');
-app.use('/', signupRouter);
-app.use('/', loginRouter);
-app.use('/', tempRouter);
-app.use('/', applyRouter);
-app.use('/', getRouter);
-app.use('/', dummyRouter);
+app.use('/mobile', signupRouter);
+app.use('/mobile', loginRouter);
+app.use('/mobile', tempRouter);
+app.use('/mobile', applyRouter);
+app.use('/mobile', getRouter);
+app.use('/mobile', dummyRouter);
 
 
 
@@ -66,7 +66,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-  "/api-docs",
+  "/mobile/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );
