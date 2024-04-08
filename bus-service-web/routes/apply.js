@@ -70,51 +70,14 @@ const axios = require('axios');
  *               bus_deport_id: 123
  */
 
-router.post('/student/apply', verifyToken('student'), async (req, res) => {
-    const { //have to auto add prev recipt number yet.
-        from_bus_stop,
-        to_bus_stop,
-        renewal, // Boolean. If its a renewal pass or normal.
-        bus_deport_id
-    } = req.body;
+router.post('/bus-service/apply', verifyToken('bus-service'), async (req, res) => {
 
-    const requiredFields = [
-        'from_bus_stop',
-        'to_bus_stop',
-        'renewal',
-        'bus_deport_id'
-    ];
-    const fields = req.checkFields(requiredFields);
-    if(fields.status == false) {
-        return res.status(400).send(fields.message);
-    }
     const client = await req.db.connect();
     try {
         await client.query('BEGIN'); // Begin transaction
         // Queries
-        const formQuery = `INSERT INTO form(
-            status,
-            from_bus_stop,
-            to_bus_stop,
-            renewal,
-            bus_deport_id
-            ) VALUES($1, $2, $3, $4, $5)
-            RETURNING id`;
-        const formParameters = [
-            "applied",
-            from_bus_stop,
-            to_bus_stop,
-            renewal, // Boolean. If its a renewal pass or normal.
-            bus_deport_id
-        ];
-        const form_query = await client.query(formQuery, formParameters);
-        const pass_id = form_query.rows[0].id;
-        const insertFormIdQuery = `UPDATE student SET form_id=$1 WHERE userid=$2`;
-        const insertFormIdParameters = [pass_id, req.user.id];
-        const result = await client.query(insertFormIdQuery, insertFormIdParameters);
-
         await client.query('COMMIT'); // Commit transaction
-        res.status(200).send({id: form_query.rows[0].id});
+        res.status(200).send("success");
     } catch (e) {
         await client.query('ROLLBACK');
         res.status(500).send({error: e});

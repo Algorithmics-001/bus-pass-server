@@ -103,7 +103,7 @@ router.post('/logout', (req, res) => {
 });
 
   
-router.get('/protected', verifyToken('student'), (req, res) => {
+router.get('/protected', verifyToken('college'), (req, res) => {
   console.log(req.user);
   res.json({ message: `Protected route accessed successfully by: ${req.user.name}, email: ${req.user.email}, type: ${req.user.type}` });
 });
