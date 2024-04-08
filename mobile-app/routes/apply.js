@@ -5,201 +5,123 @@ const {verifyToken} = require('../modules/auth.js');
 const axios = require('axios');
 
 
-async function sendToDiscord(message) {
-  await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text: message
-  })
-  .then(response => {
-      console.log('Message sent:', response.data);
-  })
-  .catch(error => {
-      console.error('Error sending message:', error);
-  });
-}
 
 /**
  * @swagger
- * /student/update:
+ * /student/apply:
  *   post:
- *     summary: Update student information
- *     description: Update student details in the database.
+ *     summary: Apply for a bus pass as a student
+ *     tags:
+ *       - Student
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
+ *       description: Student application details
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               from_bus_stop:
  *                 type: string
- *                 description: The name of the student.
- *                 example: John Doe
- *               course:
+ *                 description: Starting bus stop for the journey
+ *               to_bus_stop:
  *                 type: string
- *                 description: The course enrolled by the student.
- *                 example: Computer Science
- *               year:
+ *                 description: Destination bus stop for the journey
+ *               renewal:
+ *                 type: string
+ *                 description: Indicates if it's a renewal pass or a new one
+ *               bus_deport_id:
  *                 type: integer
- *                 description: The current academic year of the student.
- *                 example: 2
- *               batch:
- *                 type: integer
- *                 description: The batch the student belongs to.
- *                 example: 2023
- *               semester:
- *                 type: integer
- *                 description: The current semester of the student.
- *                 example: 4
- *               department:
- *                 type: string
- *                 description: The department of the student.
- *                 example: Engineering
- *               aadhar_number:
- *                 type: string
- *                 description: The Aadhar number of the student.
- *                 example: 1234 5678 9012
- *               bus_pass:
- *                 type: boolean
- *                 description: Indicates if the student has a bus pass.
- *                 example: true
- *               college:
- *                 type: string
- *                 description: The college the student is enrolled in.
- *                 example: ABC College
- *               form:
- *                 type: string
- *                 description: The form submitted by the student.
- *                 example: Admission Form 2024
- *               phone_number:
- *                 type: string
- *                 description: The phone number of the student.
- *                 example: +1234567890
- *               password:
- *                 type: string
- *                 description: The password for student authentication.
- *                 example: strongpassword
- *               email:
- *                 type: string
- *                 description: The email address of the student.
- *                 example: john.doe@example.com
- *               rollno:
- *                 type: string
- *                 description: The roll number of the student.
- *                 example: ABC12345
- *               userid:
- *                 type: string
- *                 description: The user ID of the student.
- *                 example: johndoe123
- *               father_name:
- *                 type: string
- *                 description: The name of the student's father.
- *                 example: Michael Doe
- *               address:
- *                 type: string
- *                 description: The address of the student.
- *                 example: 123 Main Street, City, Country
- *               admission_date:
- *                 type: string
- *                 format: date
- *                 description: The admission date of the student.
- *                 example: 2024-03-31
+ *                 description: ID of the bus depot
+ *             required:
+ *               - from_bus_stop
+ *               - to_bus_stop
+ *               - renewal
+ *               - bus_deport_id
  *     responses:
  *       200:
- *         description: Success message indicating the student information was updated successfully.
+ *         description: Successfully applied for the bus pass
  *         content:
- *           text/plain:
+ *           application/json:
  *             schema:
- *               type: string
- *               example: success
+ *               type: object
+ *               properties:
+ *                 form_data:
+ *                   type: object
+ *                   description: Details of the submitted form
+ *                 student_id:
+ *                   type: string
+ *                   description: ID of the student who applied for the pass
+ *       400:
+ *         description: Bad request, missing or invalid parameters
+ *       500:
+ *         description: Internal server error
+ *     example:
+ *       requestBody:
+ *         description: Example request body
+ *         content:
+ *           application/json:
+ *             example:
+ *               from_bus_stop: "Sudhar"
+ *               to_bus_stop: "Halwara"
+ *               renewal: "false"
+ *               bus_deport_id: 123
  */
 
-
-
-router.post('/student/update',verifyToken('student') , async (req, res) => {
-    const {
-        name,
-        course,
-        year,
-        batch,
-        semester,
-        department,
-        aadhar_number,
-        college,
-        phone_number,
-        rollno,
-        userid,
-        father_name,
-        address,
-        admission_date
+router.post('/student/apply', verifyToken('student'), async (req, res) => {
+    const { //have to auto add prev recipt number yet.
+        from_bus_stop,
+        to_bus_stop,
+        renewal, // Boolean. If its a renewal pass or normal.
+        bus_deport_id
     } = req.body;
-    if(userid != req.user.id) {
-        return res.status(403).send({"message":"Trying to update another user as student."});
-    }
+
     const requiredFields = [
-        'name',
-        'course',
-        'year',
-        'batch',
-        'semester',
-        'department',
-        'aadhar_number',
-        'bus_pass',
-        'college',
-        'form',
-        'phone_number',
-        'password',
-        'email',
-        'rollno',
-        'userid',
-        'father_name',
-        'address',
-        'admission_date'
+        'from_bus_stop',
+        'to_bus_stop',
+        'renewal',
+        'bus_deport_id'
     ];
-    const fields = req.checkFields(req.body, requiredFields);
-    if(fields.status==false) {
-        return res.status(500).send(fields.message);
+    const fields = req.checkFields(requiredFields);
+    if(fields.status == false) {
+        return res.status(400).send(fields.message);
     }
+    const client = await req.db.connect();
+    try {
+        await client.query('BEGIN'); // Begin transaction
+        // Queries
+        const formQuery = `INSERT INTO form(
+            status,
+            from_bus_stop,
+            to_bus_stop,
+            renewal,
+            bus_deport_id
+            ) VALUES($1, $2, $3, $4, $5)
+            RETURNING id`;
+        const formParameters = [
+            "applied",
+            from_bus_stop,
+            to_bus_stop,
+            renewal, // Boolean. If its a renewal pass or normal.
+            bus_deport_id
+        ];
+        const form_query = await client.query(formQuery, formParameters);
+        const pass_id = form_query.rows[0].id;
+        const insertFormIdQuery = `UPDATE student SET form=$1 WHERE userid=$2`;
+        const insertFormIdParameters = [pass_id, req.user.id];
+        const result = await client.query(insertFormIdQuery, insertFormIdParameters);
 
-    const query = `UPDATE student SET
-        name=$1,
-        course=$2,
-        year=$3,
-        batch=$4,
-        semester=$5,
-        department=$6,
-        aadhar_number=$7,
-        college=$8,
-        phone_number=$9,
-        rollno=$10,
-        father_name=$12,
-        address=$13,
-        admission_date=$14
-
-        WHERE userid=$11
-    `;
-    const parameters = [
-        name,
-        course,
-        year,
-        batch,
-        semester,
-        department,
-        aadhar_number,
-        college,
-        phone_number,
-        rollno,
-        req.user.id,
-        father_name,
-        address,
-        admission_date
-    ];
-    try{ 
-        const result = req.db.query(query, parameters);
-        res.status(200).send("success")
-    } catch(e) {
-        res.status(500).send(e);
+        await client.query('COMMIT'); // Commit transaction
+        res.status(200).send({id: form_query.rows[0].id});
+    } catch (e) {
+        await client.query('ROLLBACK');
+        res.status(500).send({error: e});
+    } finally {
+        client.release();
     }
 });
-  
+
+
 module.exports = router;

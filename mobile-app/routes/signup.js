@@ -131,14 +131,17 @@ router.post('/signup', async (req, res) => {
       'address',
       'admission_date'
     ];
-    const fields = req.checkFields(req.body, requiredFields);
-    if(fields.status==true) {
-    const pool = req.db;
+    const fields = req.checkFields(requiredFields);
+    if(fields.status==false) {
+      return res.status(400).send(fields.message);
+    }
+
+    const client = await req.db.connect();
     try {
       const userExistQuery = 'SELECT * FROM users WHERE username = $1';
       const userExistValues = [email];
-      const existingUser = await pool.query(userExistQuery, userExistValues);
-  
+      await client.query('BEGIN');
+      const existingUser = await client.query(userExistQuery, userExistValues);
       if (existingUser.rowCount > 0) {
         return res.send({
           message: "User already exists.",
@@ -150,7 +153,7 @@ router.post('/signup', async (req, res) => {
     VALUES ($1, crypt($2, gen_salt('bf')), $3, $4)
     RETURNING userid;`;
     const insertUserValues = [email, password, name, 'student'];
-    const { rows } = await pool.query(insertUserQuery, insertUserValues);
+    const { rows } = await client.query(insertUserQuery, insertUserValues);
     const userid = rows[0].userid;
     // console.log(userid)
 
@@ -190,23 +193,19 @@ const insertStudentParams = [
     admission_date,
     email
 ];
-    await pool.query(insertStudentQuery, insertStudentParams);
+    await client.query(insertStudentQuery, insertStudentParams);
       res.status(200).send({
         message: 'Congratulations, Account Created Successfully!',
         id: userid
     });
-  
+    await client.query('COMMIT'); // Commit transaction
     } catch (error) {
-      console.error('Error saving user:', error);
-      res.status(500).send(error);
+      await client.query('ROLLBACK');
+      res.status(500).send({error: e});
+    } finally {
+      client.release();
     }
-  
-    } else {
-      res.status(500).send({
-        message: fields.message
-      });
-    }
-  });
+});
 
 /**
  * @swagger

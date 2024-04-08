@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
   const pool = req.db;
   const loginData = req.body;
   const requiredFields = ['email', 'password'];
-  const fields = req.checkFields(req.body, requiredFields);
+  const fields = req.checkFields(requiredFields);
   if(fields.status==false) {
     return res.status(500).send(fields.message);
   }

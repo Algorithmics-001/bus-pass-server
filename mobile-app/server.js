@@ -18,7 +18,7 @@ app.use(attachCheckFields);
 /**
  * Usage:
  * const requiredFields = ['field1', 'field2', 'etc'];
- * const fields = req.checkFields(req.body, requiredFields);
+ * const fields = req.checkFields(requiredFields);
  * Response upon missing:
  * {
  *   status: false,

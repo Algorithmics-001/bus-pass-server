@@ -20,8 +20,8 @@ function checkMissingFields(query, requiredFields) {
 
 // Middleware function to attach checkFields to the request object
 function attachCheckFields(req, res, next) {
-    req.checkFields = (query, requiredFields) => {
-        return checkMissingFields(query, requiredFields);
+    req.checkFields = (requiredFields) => {
+        return checkMissingFields(req.body, requiredFields);
     };
     next();
 }
