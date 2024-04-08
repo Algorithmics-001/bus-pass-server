@@ -138,9 +138,9 @@ router.post('/signup', async (req, res) => {
 
     const client = await req.db.connect();
     try {
+      await client.query('BEGIN');
       const userExistQuery = 'SELECT * FROM users WHERE username = $1';
       const userExistValues = [email];
-      await client.query('BEGIN');
       const existingUser = await client.query(userExistQuery, userExistValues);
       if (existingUser.rowCount > 0) {
         return res.send({
@@ -198,6 +198,8 @@ const insertStudentParams = [
         message: 'Congratulations, Account Created Successfully!',
         id: userid
     });
+
+    await client.query('INSERT INTO not_approved(username) VALUES($1)', [email]);
     await client.query('COMMIT'); // Commit transaction
     } catch (error) {
       await client.query('ROLLBACK');

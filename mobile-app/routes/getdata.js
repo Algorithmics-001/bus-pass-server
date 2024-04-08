@@ -101,5 +101,9 @@ router.get('/get/student',verifyToken('student'), async (req, res) => {
       }
 });
 
+router.get('/get/status',verifyToken('student'), async (req, res) => {
+  res.send("test");
+});
+
 
 module.exports = router;

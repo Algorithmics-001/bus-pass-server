@@ -51,6 +51,11 @@ router.post('/login', async (req, res) => {
       };
       const result = await pool.query(query);
       if (result.rowCount == 1 && result.rows[0].password_correct == true) {
+
+          const approvalStatus = await req.db.query('SELECT * FROM not_approved WHERE username=$1', [loginData.email]);
+          if(approvalStatus.rowCount > 0) {
+            return res.status(403).send("Account not yet approved.");
+          }
           const username = result.rows[0].name;
           const id = result.rows[0].userid;
           const user = result.rows[0];
