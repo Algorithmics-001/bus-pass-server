@@ -152,7 +152,7 @@ router.post('/signup', async (req, res) => {
     const insertUserQuery = `INSERT INTO users(username, password_hash, name, usertype)
     VALUES ($1, crypt($2, gen_salt('bf')), $3, $4)
     RETURNING userid;`;
-    const insertUserValues = [email, password, name, 'student'];
+    const insertUserValues = [email, password, name, 'unapproved'];
     const { rows } = await client.query(insertUserQuery, insertUserValues);
     const userid = rows[0].userid;
     // console.log(userid)
@@ -198,8 +198,6 @@ const insertStudentParams = [
         message: 'Congratulations, Account Created Successfully!',
         id: userid
     });
-
-    await client.query('INSERT INTO not_approved(username) VALUES($1)', [email]);
     await client.query('COMMIT'); // Commit transaction
     } catch (error) {
       await client.query('ROLLBACK');
