@@ -31,7 +31,7 @@ app.use(attachCheckFields);
 const applyRouter = require('./routes/apply.js');
 const loginRouter = require('./routes/login.js');
 app.use('/', applyRouter);
-app.use('/', loginRouter);
+app.use('/college', loginRouter);
 
 
 
@@ -57,7 +57,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-  "/api-docs",
+  "/college/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );

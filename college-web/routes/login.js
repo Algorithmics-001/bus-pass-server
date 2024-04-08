@@ -13,7 +13,7 @@ function generateToken(user) {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login etc.
- * /login:
+ * /college/login:
  *   post:
  *     summary: simple login endpoint
  *     tags: [LogIn]
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
   }
   try {
       const query = {
-          text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
+          text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1 AND usertype='college';",
           values: [loginData.email, loginData.password]
       };
       const result = await pool.query(query);
@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /logout:
+ * /college/logout:
  *   post:
  *     summary: Logout endpoint
  *     tags: [LogOut]
