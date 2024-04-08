@@ -21,3 +21,8 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 ```
+
+# sudoers for ci/cd
+```
+github ALL=NOPASSWD: /usr/bin/systemctl stop bus-pass-mobile-api,/usr/bin/systemctl stop bus-college-api,/usr/bin/systemctl stop bus-pass-service-api,/usr/bin/systemctl stop bus-pass-admin-api, /usr/bin/systemctl restart bus-pass-mobile-api, /usr/bin/systemctl restart bus-pass-api-update, /usr/bin/systemctl stop meet-share, /usr/bin/systemctl restart meet-share, /usr/bin/systemctl restart bus-pass-college-api, /usr/bin/systemctl restart bus-pass-service-api, /usr/bin/systemctl restart bus-pass-admin-api
+```
