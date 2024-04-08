@@ -98,7 +98,7 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
       `;
         const renewalParams = [req.user.id];
         const renewal = await client.query(renewalQuery, renewalParams);
-        console.log(renewal);
+        console.log(renewal.rows[0].is_bus_pass_id_null == true);
         if(renewal.rows[0].is_bus_pass_id_null == true) {
             const formQuery = `INSERT INTO form(
                 status,
@@ -109,8 +109,9 @@ router.post('/student/apply', verifyToken('student'), async (req, res) => {
                 from_date,
                 to_date,
                 student_id
-                ) VALUES($1, $2, $3, $4, $5, $6, $7)
+                ) VALUES($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING id`;
+
             const formParameters = [
                 "applied",
                 from_bus_stop,
