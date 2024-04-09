@@ -112,7 +112,7 @@ router.post('/requests',verifyToken('bus-service'), async (req, res) => {
             users AS u
             JOIN student AS s ON s.userid=u.userid
         WHERE
-            u.usertype=$1 AND s.college=$2;`, [account,req.user.id]);
+            u.usertype='student';`);
         return res.status(200).send(accountRequestsQuery.rows);
     }
 
@@ -126,8 +126,8 @@ router.post('/requests',verifyToken('bus-service'), async (req, res) => {
         FROM form AS f
         JOIN student AS s ON s.userid=f.student_id
         JOIN users AS u ON u.userid=s.userid
-        WHERE s.college=$1 AND f.renew=$2 AND f.forwarded=$3`;
-    const formRequest = await req.db.query(formRequestQuery, [req.user.id, _renew, _forwarded]);
+        WHERE f.renew=$1 AND f.forwarded=$2`;
+    const formRequest = await req.db.query(formRequestQuery, [_renew, _forwarded]);
     return res.status(200).send(formRequest.rows);
     } else {
         return res.status(401).send({error: "missing fields."});
