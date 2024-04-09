@@ -31,9 +31,11 @@ app.use(attachCheckFields);
 const applyRouter = require('./routes/apply.js');
 const loginRouter = require('./routes/login.js');
 const signupRouter = require('./routes/signup.js')
+const getDataRouter = require('./routes/getdata.js');
 app.use('/', applyRouter);
 app.use('/college', loginRouter);
 app.use('/college', signupRouter);
+app.use('/college', getDataRouter);
 
 
 
