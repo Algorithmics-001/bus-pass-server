@@ -4,12 +4,9 @@ const router = express.Router();
 const {verifyToken} = require('../modules/auth.js');
 const axios = require('axios');
 
-
-
-
 /**
  * @swagger
- * /api/college/requests/individual:
+ * /api/bus-service/requests/individual:
  *   post:
  *     summary: Update individual account requests.
  *     description: >
@@ -86,7 +83,7 @@ const axios = require('axios');
  */
 
 
-router.post('/requests/individual', verifyToken('college'), async (req, res) => {
+router.post('/requests/individual', verifyToken('bus-service'), async (req, res) => {
     const { acc_id, account, form, forwarded } = req.body;
     if(!acc_id) {
         return res.status(401).send({error: "Account id not provided"});

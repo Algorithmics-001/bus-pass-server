@@ -5,7 +5,7 @@ const {verifyToken} = require('../modules/auth.js');
 
 /**
  * @swagger
- * /api/college/requests:
+ * /api/bus-service/requests:
  *   post:
  *     summary: Create or retrieve account requests.
  *     description: >
@@ -101,7 +101,7 @@ const {verifyToken} = require('../modules/auth.js');
  */
 
 
-router.post('/requests',verifyToken('college'), async (req, res) => {
+router.post('/requests',verifyToken('bus-service'), async (req, res) => {
 //!important
     const {account, forwarded, renew, form} = req.body;
     if(account) {
