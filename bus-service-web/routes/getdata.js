@@ -107,7 +107,7 @@ router.post('/requests',verifyToken('college'), async (req, res) => {
     if(account) {
         console.log(account, req.user.id)
         const accountRequestsQuery = await req.db.query(`
-        SELECT u.name, u.username AS email,  s.course, s.batch, s.semester, s.rollno, s.department, s.address, s.phone_number AS phone, u.usertype AS status, s.userid AS acc_id
+        SELECT u.name, u.username AS email,  s.course, s.batch, s.semester, s.rollno, s.department, s.address, s.phone_number AS phone, u.usertype AS status
         FROM 
             users AS u
             JOIN student AS s ON s.userid=u.userid
