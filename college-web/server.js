@@ -32,10 +32,10 @@ const applyRouter = require('./routes/apply.js');
 const loginRouter = require('./routes/login.js');
 const signupRouter = require('./routes/signup.js')
 const getDataRouter = require('./routes/getdata.js');
-app.use('/', applyRouter);
-app.use('/college', loginRouter);
-app.use('/college', signupRouter);
-app.use('/college', getDataRouter);
+app.use('/api/', applyRouter);
+app.use('/api/college', loginRouter);
+app.use('/api/college', signupRouter);
+app.use('/api/college', getDataRouter);
 
 
 
@@ -61,7 +61,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-  "/college/api-docs",
+  "/api/college/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );

@@ -29,7 +29,7 @@ app.use(attachCheckFields);
 
 //routers from /routes folder
 const loginRouter = require('./routes/login.js');
-app.use('/bus-service', loginRouter);
+app.use('/api/bus-service', loginRouter);
 
 
 
@@ -55,7 +55,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-  "/bus-service/api-docs",
+  "/api/bus-service/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(specs)
 );
