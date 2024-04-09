@@ -114,22 +114,24 @@ router.post('/requests',verifyToken('college'), async (req, res) => {
         WHERE
             u.usertype=$1 AND s.college=$2;`, [account,req.user.id]);
         return res.status(200).send(accountRequestsQuery.rows);
-    } else {
-        res.status(500).send("err");
     }
 
     if(form) {
-        console.log("yes");
+        const _forwarded = (forwarded)?true:false;
+        const _renew = (renew)?true:false;
+    const formRequestQuery = `SELECT s.name, u.username, s.course, s.batch,
+    s.semester, s.rollno, s.department, s.address, s.phone_number, f.id AS form_id,
+    f.status, f.from_bus_stop, f.to_bus_stop, f.bus_deport_id, f.renewal, 
+    f.from_date, f.to_date, f.student_id AS acc_id
+        FROM form AS f
+        JOIN student AS s ON s.userid=f.student_id
+        JOIN users AS u ON u.userid=s.userid
+        WHERE s.college=$1 AND f.renew=$2 AND f.forwarded=$3`;
+    const formRequest = await req.db.query(formRequestQuery, [req.user.id, _renew, _forwarded]);
+    return res.status(200).send(formRequest.rows);
+    } else {
+        return res.status(401).send({error: "missing fields."});
     }
-    // const requestsQuery = `SELECT s.name, u.username, s.course, s.batch, s.semester, s.rollno, s.department, s.address, s.phone_number, f.id, f.status, f.from_bus_stop, f.to_bus_stop, f.bus_deport_id, f.renewal, f.from_date, f.to_date, f.student_id
-    // FROM form AS f
-    // JOIN student AS s ON s.userid=f.student_id
-    // JOIN users AS u ON u.userid=s.userid
-    // WHERE s.college=$1`
-    // const requestParams = [req.user.id];
-    // const result = await req.db.query(requestsQuery, requestParams);
-
-    // res.status(200).send(result.rows);
 });
 
 
