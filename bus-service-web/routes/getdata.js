@@ -140,6 +140,7 @@ router.post('/complaint', async (req, res) => {
     await req.db.query('INSERT INTO complaint(complaint_type, complaint_description) VALUES($1, $2)',
     [complaint_type, complaint_description]
     );
+    res.status(200).send("complaint recieved");
 });
   
 
