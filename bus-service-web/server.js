@@ -29,7 +29,12 @@ app.use(attachCheckFields);
 
 //routers from /routes folder
 const loginRouter = require('./routes/login.js');
+const getdataRouter = require('./routes/getdata.js');
+const approveRouter = require('./routes/approve.js');
 app.use('/api/bus-service', loginRouter);
+app.use('/api/bus-service', getdataRouter);
+app.use('/api/bus-service', approveRouter);
+
 
 
 

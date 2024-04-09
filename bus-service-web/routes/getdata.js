@@ -135,4 +135,13 @@ router.post('/requests',verifyToken('bus-service'), async (req, res) => {
 });
 
 
+router.post('/complaint', async (req, res) => {
+    const {complaint_type, complaint_description} = req.body;
+    await req.db.query('INSERT INTO complaint(complaint_type, complaint_description) VALUES($1, $2)',
+    [complaint_type, complaint_description]
+    );
+});
+  
+
+
 module.exports = router;
