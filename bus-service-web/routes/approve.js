@@ -84,19 +84,12 @@ const axios = require('axios');
 
 
 router.post('/requests/individual', verifyToken('bus-service'), async (req, res) => {
-    const { acc_id, account, form, forwarded } = req.body;
+    const { acc_id, form } = req.body;
     if(!acc_id) {
         return res.status(401).send({error: "Account id not provided"});
     }
-
-    if(account) {
-        const accountQuery = await req.db.query(`UPDATE users SET usertype=$1 WHERE userid=$2`, [account, acc_id]);
-        return res.status(200).send({status: `Query Success. Affected rows: ${accountQuery.rowCount}`})
-    }
-
     if(form) {
-        const _forwarded = (forwarded)?true:false;
-        const formQuery = await req.db.query(`UPDATE form SET status=$1, forwarded=$2 WHERE id=(SELECT * FROM user WHERE userid=$3)`, [form,_forwarded, acc_id]);
+        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE id=(SELECT * FROM user WHERE userid=$2)`, [form, acc_id]);
         return res.status(200).send({status: `Query Success. Affected rows: ${formQuery.rowCount}`})
     }
 
