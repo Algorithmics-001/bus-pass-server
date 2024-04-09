@@ -13,7 +13,7 @@ function generateToken(user) {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login etc.
- * /college/login:
+ * /api/college/login:
  *   post:
  *     summary: simple login endpoint
  *     tags: [LogIn]
@@ -81,7 +81,7 @@ router.post('/login', async (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /college/logout:
+ * /api/college/logout:
  *   post:
  *     summary: Logout endpoint
  *     tags: [LogOut]
@@ -107,7 +107,7 @@ router.post('/logout', (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /college/protected:
+ * /api/college/protected:
  *   get:
  *     summary: protectedendpoint
  *     tags: [protected]

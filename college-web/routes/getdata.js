@@ -5,7 +5,7 @@ const {verifyToken} = require('../modules/auth.js');
 
 /**
  * @swagger
- * /college/requests:
+ * /api/college/requests:
  *   post:
  *     summary: Create or retrieve account requests.
  *     description: >
