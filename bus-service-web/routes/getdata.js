@@ -5,7 +5,7 @@ const {verifyToken} = require('../modules/auth.js');
 
 /**
  * @swagger
- * /api/college/requests:
+ * /api/bus-service/requests:
  *   post:
  *     summary: Create or retrieve account requests.
  *     description: >
@@ -101,18 +101,18 @@ const {verifyToken} = require('../modules/auth.js');
  */
 
 
-router.post('/requests',verifyToken('college'), async (req, res) => {
+router.post('/requests',verifyToken('bus-service'), async (req, res) => {
 //!important
     const {account, forwarded, renew, form} = req.body;
     if(account) {
         console.log(account, req.user.id)
         const accountRequestsQuery = await req.db.query(`
-        SELECT u.name, u.username AS email,  s.course, s.batch, s.semester, s.rollno, s.department, s.address, s.phone_number AS phone, u.usertype AS status, s.userid AS acc_id
+        SELECT u.name, u.username AS email,  s.course, s.batch, s.semester, s.rollno, s.department, s.address, s.phone_number AS phone, u.usertype AS status
         FROM 
             users AS u
             JOIN student AS s ON s.userid=u.userid
         WHERE
-            u.usertype=$1 AND s.college=$2;`, [account,req.user.id]);
+            u.usertype='student';`);
         return res.status(200).send(accountRequestsQuery.rows);
     }
 
@@ -126,13 +126,23 @@ router.post('/requests',verifyToken('college'), async (req, res) => {
         FROM form AS f
         JOIN student AS s ON s.userid=f.student_id
         JOIN users AS u ON u.userid=s.userid
-        WHERE s.college=$1 AND f.renew=$2 AND f.forwarded=$3`;
-    const formRequest = await req.db.query(formRequestQuery, [req.user.id, _renew, _forwarded]);
+        WHERE f.renew=$1 AND f.forwarded=$2`;
+    const formRequest = await req.db.query(formRequestQuery, [_renew, _forwarded]);
     return res.status(200).send(formRequest.rows);
     } else {
         return res.status(401).send({error: "missing fields."});
     }
 });
+
+
+router.post('/complaint', async (req, res) => {
+    const {complaint_type, complaint_description} = req.body;
+    await req.db.query('INSERT INTO complaint(complaint_type, complaint_description) VALUES($1, $2)',
+    [complaint_type, complaint_description]
+    );
+    res.status(200).send("complaint recieved");
+});
+  
 
 
 module.exports = router;

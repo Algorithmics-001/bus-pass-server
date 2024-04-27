@@ -13,7 +13,7 @@ function generateToken(user) {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login etc.
- * /login:
+ * /api/bus-service/login:
  *   post:
  *     summary: simple login endpoint
  *     tags: [LogIn]
@@ -39,15 +39,15 @@ function generateToken(user) {
 router.post('/login', async (req, res) => {
   const pool = req.db;
   const loginData = req.body;
-  const requiredFields = ['email', 'password'];
+  const requiredFields = ['username', 'password'];
   const fields = req.checkFields(requiredFields);
   if(fields.status==false) {
     return res.status(500).send(fields.message);
   }
   try {
       const query = {
-          text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1;",
-          values: [loginData.email, loginData.password]
+          text: "SELECT userid,name,usertype,username,(password_hash = crypt($2, password_hash)) AS password_correct FROM users WHERE username = $1 AND usertype='bus-service';",
+          values: [loginData.username, loginData.password]
       };
       const result = await pool.query(query);
       if (result.rowCount == 1 && result.rows[0].password_correct == true) {
@@ -80,7 +80,7 @@ router.post('/login', async (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /bus-service/logout:
+ * /api/bus-service/logout:
  *   post:
  *     summary: Logout endpoint
  *     tags: [LogOut]
@@ -107,7 +107,7 @@ router.post('/logout', (req, res) => {
  * tags:
  *   name: User Management
  *   description: Simple account creation, deletion, login, etc.
- * /bus-service/protected:
+ * /api/bus-service/protected:
  *   post:
  *     summary: Protected
  *     tags: [Protected]
@@ -125,7 +125,7 @@ router.post('/logout', (req, res) => {
 
 router.post('/protected', verifyToken('bus-service'), (req, res) => {
   console.log(req.user);
-  res.json({ message: `Protected route accessed successfully by: ${req.user.name}, email: ${req.user.email}, type: ${req.user.type}` });
+  res.json({ message: `Protected route accessed successfully by: ${req.user.name}, username: ${req.user.email}, type: ${req.user.type}` });
 });
 
   
@@ -136,17 +136,17 @@ router.post('/protected', verifyToken('bus-service'), (req, res) => {
  *     LoginData:
  *       type: object
  *       required:
- *         - email
+ *         - username
  *         - password
  *       properties:
- *         email:
+ *         username:
  *           type: string
- *           description: Email address of the user.
+ *           description: username of the user.
  *         password:
  *           type: string
  *           description: Password for the user's account.
  *       example:
- *         email: john.doe123@example.com
+ *         username: ludhiana
  *         password: password123
 */
 module.exports = router;
