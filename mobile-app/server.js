@@ -8,6 +8,10 @@ app.use(cors()); // for cross origin
 app.use(express.json()); //for res.json (if im not wrong)
 app.use(cookieParser()); //to parse cookies. usage: req.cookies.COOKIE_NAME
 
+const uploadMiddleware = require('./modules/upload.js'); // for uploading files
+app.use(uploadMiddleware);
+
+
 //db config
 const { attachDatabasePool } = require('./db.js');
 app.use(attachDatabasePool); //usage example: await req.db.query('SELECT 1');
