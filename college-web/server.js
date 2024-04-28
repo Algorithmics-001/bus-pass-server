@@ -36,7 +36,6 @@ app.use('/api/college', approveRouter);
 app.use('/api/college', loginRouter);
 app.use('/api/college', signupRouter);
 app.use('/api/college', getDataRouter);
-app.use('/api/college', getDataRouter);
 
 
 //swagger configuration

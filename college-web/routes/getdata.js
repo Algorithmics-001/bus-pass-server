@@ -101,7 +101,18 @@ const {verifyToken} = require('../modules/auth.js');
  */
 
 
-router.post('/requests',verifyToken('college'), async (req, res) => {
+/**
+ * /college/account/:whattodo (reject/forward/restore)
+ * /college/account/get/:whattodo (rejected/forwarded/applied)
+ * 
+ * /college/pass/:whattodo (reject/forward/restore)
+ * /college/pass/get/:whattodo (rejected/forwarded/applied)
+ * /service/pass/:whattodo (accept/reject)
+ * /service/pass/get/:whattodo (accepted/rejected)
+*/
+
+
+router.post('/requests',verifyToken('college'), async (req, res) => { //deprecated
 //!important
     const {account, forwarded, renew, form} = req.body;
     if(account) {
@@ -134,5 +145,69 @@ router.post('/requests',verifyToken('college'), async (req, res) => {
     }
 });
 
+
+router.get('/dashboard', verifyToken('college'), async (req, res) => {
+    try {
+    const accountRequests = await req.db.query(`SELECT COUNT(*) FROM
+    users AS u
+    JOIN student AS s ON s.userid=u.userid
+    WHERE
+    u.usertype='applied' AND s.college=$1`, [req.user.id]);
+
+    const accountsAccepted = await req.db.query(`SELECT COUNT(*) FROM
+    users AS u
+    JOIN student AS s ON s.userid=u.userid
+    WHERE
+    u.usertype='student' AND s.college=$1`, [req.user.id]);
+
+    const accountsRejected = await req.db.query(`SELECT COUNT(*) FROM
+    users AS u
+    JOIN student AS s ON s.userid=u.userid
+    WHERE
+    u.usertype='rejected' AND s.college=$1`, [req.user.id]);
+
+    const passesAccepted = await req.db.query(`SELECT COUNT(*) FROM 
+    form AS f JOIN student AS s ON s.id=f.student_id
+    WHERE f.status='accepted' AND s.college=$1;
+    `, [req.user.id]);
+
+    const passesRejected = await req.db.query(`SELECT COUNT(*) FROM 
+    form AS f JOIN student AS s ON s.id=f.student_id
+    WHERE f.status='accepted' AND s.college=$1;
+    `, [req.user.id]);
+
+    const passesForwarded = await req.db.query(`SELECT COUNT(*) FROM 
+    form AS f JOIN student AS s ON s.id=f.student_id
+    WHERE f.status='forwarded' AND s.college=$1;
+    `, [req.user.id]);
+
+    const passesDenied = await req.db.query(`SELECT COUNT(*) FROM 
+    form AS f JOIN student AS s ON s.id=f.student_id
+    WHERE f.status='denied' AND s.college=$1;
+    `, [req.user.id]);
+
+    const renewAccepted = await req.db.query(`SELECT COUNT(*) FROM 
+    form AS f JOIN student AS s ON s.id=f.student_id
+    WHERE f.status='accepted' AND f.renewal=true AND s.college=$1;
+    `, [req.user.id]);
+    
+    res.status(200).send({
+        // college_id: req.user.id,
+        account_requests: accountRequests.rows[0].count,
+        account_requests_accepted: accountsAccepted.rows[0].count,
+        account_requests_rejected: accountsRejected.rows[0].count,
+        passes_accepted: passesAccepted.rows[0].count,
+        passes_rejected: passesRejected.rows[0].count,
+        passes_forwarded: passesForwarded.rows[0].count,
+        passes_denied: passesDenied.rows[0].count,
+        renew_accepted: renewAccepted.rows[0].count,
+    });
+
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send("Internal Server Error.")
+    }
+
+});
 
 module.exports = router;
