@@ -101,15 +101,7 @@ const {verifyToken} = require('../modules/auth.js');
  */
 
 
-/**
- * /college/account/:whattodo (reject/forward/restore)
- * /college/account/get/:whattodo (rejected/forwarded/applied)
- * 
- * /college/pass/:whattodo (reject/forward/restore)
- * /college/pass/get/:whattodo (rejected/forwarded/applied)
- * /service/pass/:whattodo (accept/reject)
- * /service/pass/get/:whattodo (accepted/rejected)
-*/
+
 
 
 router.post('/requests',verifyToken('college'), async (req, res) => { //deprecated
@@ -173,7 +165,7 @@ router.get('/dashboard', verifyToken('college'), async (req, res) => {
 
     const passesRejected = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
-    WHERE f.status='accepted' AND s.college=$1;
+    WHERE f.status='rejected' AND s.college=$1;
     `, [req.user.id]);
 
     const passesForwarded = await req.db.query(`SELECT COUNT(*) FROM 

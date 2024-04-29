@@ -32,10 +32,12 @@ const approveRouter = require('./routes/approve.js');
 const loginRouter = require('./routes/login.js');
 const signupRouter = require('./routes/signup.js')
 const getDataRouter = require('./routes/getdata.js');
+const passRouter = require('./routes/pass.js');
 app.use('/api/college', approveRouter);
 app.use('/api/college', loginRouter);
 app.use('/api/college', signupRouter);
 app.use('/api/college', getDataRouter);
+app.use('/api/college', passRouter);
 
 
 //swagger configuration
