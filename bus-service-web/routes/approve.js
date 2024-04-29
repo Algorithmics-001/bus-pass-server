@@ -93,7 +93,7 @@ router.post('/requests/individual', verifyToken('bus-service'), async (req, res)
 
             const client = await req.db.connect();
             await client.query('BEGIN'); // Begin transaction
-            const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE id=(SELECT * FROM user WHERE userid=$2)`, [form, acc_id]);
+            const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE id=(SELECT student_id FROM users WHERE userid=$2)`, [form, acc_id]);
             if(form === "accepted") {
                 const passQuery = await req.db.query(`INSERT INTO bus_pass (from_date, to_date, from_bus_stop, to_bus_stop, payment_ticket, userid)
                 SELECT f.from_date, f.to_date, f.from_bus_stop, f.to_bus_stop, f.payment_ticket, s.userid
