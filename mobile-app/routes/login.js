@@ -113,14 +113,16 @@ router.post('/logout', (req, res) => {
 });
 
   
-router.get('/protected', verifyToken('student'), (req, res) => {
+router.get('/protected', verifyToken('student'),async (req, res) => {
   try {
-    const busPassQuery = req.db.query("SELECT * FROM bus_pass WHERE userid=$1");
-    const studentQuery = req.db.query("SELECT * FROM student WHERE userid=$1");
+    const busPassQuery = await req.db.query("SELECT * FROM bus_pass WHERE userid=$1", [req.user.id]);
+    const studentQuery = await req.db.query("SELECT * FROM student WHERE userid=$1", [req.user.id]);
+    const formQuery = await req.db.query("SELECT * FROM form WHERE student_id=$1", [studentQuery.rows[0].id]);
 
     res.status(200).send({
       bus_pass: busPassQuery.rows,
-      student: studentQuery.rows
+      student: studentQuery.rows,
+      form: formQuery.rows
     });
   } catch (e) {
     res.status(500).send("Internal server error");
