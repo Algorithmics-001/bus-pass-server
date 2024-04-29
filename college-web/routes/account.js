@@ -53,12 +53,12 @@ router.post('/account/:userid/:status', verifyToken('college'), async (req, res)
         SET usertype = $1
         FROM student AS s
         WHERE u.userid = s.userid
-        AND s.college_id = $2
+        AND s.college = $2
         AND u.userid=$3;
         `, [status, req.user.id, userid])
     } catch (e) {
         console.log(e);
-        res.status(500).send("Internal Server error");
+        res.status(500).send(e);
     }
 });
 
