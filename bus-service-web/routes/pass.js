@@ -4,6 +4,7 @@ const router = express.Router();
 const {verifyToken} = require('../modules/auth.js');
 
 /**
+ * //account/:status (reject/accepted/restore)
  * 
  * [POST]//pass/:id/:whattodo (reject/forward/restore)
  * [GET]//pass/get/:whattodo?type=renew (rejected/forwarded/applied)
@@ -12,7 +13,7 @@ const {verifyToken} = require('../modules/auth.js');
 */
 /**
  * @swagger
- * /pass/get/{status}:
+ * /api/college/pass/get/{status}:
  *   get:
  *     summary: Get passes based on status
  *     description: Retrieve passes based on status for students of the authenticated college.
@@ -45,6 +46,8 @@ const {verifyToken} = require('../modules/auth.js');
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
+ //account/get/:status (rejected/applied/accepted)
+
 router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
     const {type} = req.query;
     const status = req.params.status;
@@ -52,7 +55,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
     console.log(type, _type, status)
     try {
         const passesQuery = await req.db.query(`SELECT f.*, s.* FROM student AS s
-        JOIN form AS f ON f.id=s.form_id WHERE s.college=$1 AND f.renewal=$2`, [req.user.id, _type]);
+        JOIN form AS f ON f.id=s.form_id WHERE AND f.renewal=$2`, [req.user.id, _type]);
         res.status(200).send(passesQuery.rows);
     } catch(e) {
         res.status(200).send("internal server error");
@@ -62,7 +65,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
 
 /**
  * @swagger
- * /form/{studentid}/{action}:
+ * /api/college/pass/{studentid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
@@ -99,7 +102,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
-router.post('/form/:studentid/:action',verifyToken('bus-service') , async (req, res) => {
+router.post('/pass/:studentid/:action',verifyToken('college') , async (req, res) => {
     const studentid = req.params.studentid;
     const action = req.params.action;
     try {
