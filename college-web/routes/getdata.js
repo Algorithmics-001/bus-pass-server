@@ -183,17 +183,17 @@ router.get('/dashboard', verifyToken('college'), async (req, res) => {
     WHERE f.status='accepted' AND f.renewal=true AND s.college=$1;
     `, [req.user.id]);
     
-    res.status(200).send({
+    res.status(200).send([
         // college_id: req.user.id,
-        account_requests: accountRequests.rows[0].count,
-        account_requests_accepted: accountsAccepted.rows[0].count,
-        account_requests_rejected: accountsRejected.rows[0].count,
-        passes_accepted: passesAccepted.rows[0].count,
-        passes_rejected: passesRejected.rows[0].count,
-        passes_forwarded: passesForwarded.rows[0].count,
-        passes_denied: passesDenied.rows[0].count,
-        renew_accepted: renewAccepted.rows[0].count,
-    });
+        {text:"Account Requests", number: accountRequests.rows[0].count},
+        {text:"Account Requests Accepted", number: accountsAccepted.rows[0].count},
+        {text:"Account Requests Rejected", number: accountsRejected.rows[0].count},
+        {text:"Passes Accepted", number: passesAccepted.rows[0].count},
+        {text:"Passes Rejected", number: passesRejected.rows[0].count},
+        {text:"Passes Forwarded", number: passesForwarded.rows[0].count},
+        {text:"Passes Denied", number: passesDenied.rows[0].count},
+        {text:"Renew Accepted", number: renewAccepted.rows[0].count},
+    ]);
 
     } catch (e) {
         console.log(e);
