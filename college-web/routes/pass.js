@@ -65,7 +65,7 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/college/form/{userid}/{action}:
+ * /api/college/pass/{userid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
