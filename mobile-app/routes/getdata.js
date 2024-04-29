@@ -102,8 +102,9 @@ router.get('/get/student',verifyToken('student'), async (req, res) => {
       }
 });
 
-router.get('/get/status',verifyToken('student'), async (req, res) => {
-  res.send("test");
+router.get('/get/colleges', async (req, res) => {
+  const collges = await req.db.query("SELECT name, userid FROM college;");
+  res.status(200).send(collges.rows);
 });
 
 
