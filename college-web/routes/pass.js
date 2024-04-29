@@ -50,11 +50,12 @@ const {verifyToken} = require('../modules/auth.js');
 router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
     const {type} = req.query;
     const status = req.params.status;
+    console.log(status);
     const _type = type?true:false;
     console.log(type, _type, status)
     try {
         const passesQuery = await req.db.query(`SELECT f.*, s.* FROM student AS s
-        JOIN form AS f ON f.id=s.form_id WHERE s.college=$1 AND f.renewal=$2`, [req.user.id, _type]);
+        JOIN form AS f ON f.id=s.form_id WHERE s.college=$1 AND f.renewal=$2 AND f.status=$3`, [req.user.id, _type, status]);
         res.status(200).send(passesQuery.rows);
     } catch(e) {
         res.status(200).send("internal server error");
