@@ -101,7 +101,7 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
-// * [POST]//pass/:id/:whattodo (rejected/forwarded/applied)
+// * [POST]//pass/:id/:whattodo (rejected/forward/applied)
 router.post('/pass/:userid/:action',verifyToken('college') , async (req, res) => {
     const userid = req.params.userid;
     const action = req.params.action;

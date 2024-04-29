@@ -99,14 +99,20 @@ router.post('/account/:userid/:status', verifyToken('college'), async (req, res)
 router.get('/account/get/:status', verifyToken('college'), async (req,res) => {
     var status = req.params.status;
     status = (status==='accepted')?'student':status;
+    console.log(status);
+    const _status = (status)?true:false;
     try {
-        const accountsQuery  = await req.db.query(`SELECT s.*, u.username, u.name FROM student AS s
-        JOIN users AS u ON u.userid=s.userid AND u.usertype=$1 AND s.college=$2`,
-        [status, req.user.id]);
+        if(_status) {
+            const accountsQuery  = await req.db.query(`SELECT s.*, u.username, u.name FROM student AS s
+            JOIN users AS u ON u.userid=s.userid AND u.usertype=$1 AND s.college=$2`,
+            [status, req.user.id]);
+            return res.status(200).send(accountsQuery.rows);
+        } else {
+            return req.status(401).send("Missing status");
+        }
 
-        res.status(200).send(accountsQuery.rows);
     } catch (e) {
-        res.status(500).send("Internal server error");
+        return res.status(500).send("Internal server error");
     }
 
 });
