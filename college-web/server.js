@@ -33,11 +33,13 @@ const loginRouter = require('./routes/login.js');
 const signupRouter = require('./routes/signup.js')
 const getDataRouter = require('./routes/getdata.js');
 const passRouter = require('./routes/pass.js');
+const accountRouter = require('./routes/account.js');
 app.use('/api/college', approveRouter);
 app.use('/api/college', loginRouter);
 app.use('/api/college', signupRouter);
 app.use('/api/college', getDataRouter);
 app.use('/api/college', passRouter);
+app.use('/api/college', accountRouter);
 
 
 //swagger configuration
