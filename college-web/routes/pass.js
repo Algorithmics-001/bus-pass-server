@@ -6,7 +6,6 @@ const {verifyToken} = require('../modules/auth.js');
 /**
  * //account/:status (reject/accepted/restore)
  * 
- * [POST]//pass/:id/:whattodo (reject/forward/restore)
  * [GET]//pass/get/:whattodo?type=renew (rejected/forwarded/applied)
  * [POST]/service/pass/:whattodo (accept/reject)
  * [GET]/service/pass/get/:whattodo?type=renew (accepted/rejected)
@@ -65,7 +64,7 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/college/form/{studentid}/{action}:
+ * /api/college/form/{userid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
@@ -102,15 +101,16 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
-router.post('/pass/:studentid/:action',verifyToken('college') , async (req, res) => {
-    const studentid = req.params.studentid;
+// * [POST]//pass/:id/:whattodo (rejected/forwarded/applied)
+router.post('/pass/:userid/:action',verifyToken('college') , async (req, res) => {
+    const userid = req.params.userid;
     const action = req.params.action;
     try {
-        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE userid=$2`, [action,studentid]);
+        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE userid=$2`, [action,userid]);
         if(formQuery.rowCount === 0) {
             res.status(404).send("User not found");
         } else {
-            res.status(200).send({form_set_to: action, student_id: studentid});
+            res.status(200).send({form_set_to: action, student_id: userid});
         }
     } catch (e) {
         res.status(500).send("Internal server error");
