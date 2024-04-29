@@ -114,8 +114,17 @@ router.post('/logout', (req, res) => {
 
   
 router.get('/protected', verifyToken('student'), (req, res) => {
-  console.log(req.user);
-  res.json({ message: `Success.`, user: req.user });
+  try {
+    const busPassQuery = req.db.query("SELECT * FROM bus_pass WHERE userid=$1");
+    const studentQuery = req.db.query("SELECT * FROM student WHERE userid=$1");
+
+    res.status(200).send({
+      bus_pass: busPassQuery.rows,
+      student: studentQuery.rows
+    });
+  } catch (e) {
+    res.status(500).send("Internal server error");
+  }
 });
 
   
