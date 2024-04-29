@@ -58,6 +58,7 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
         JOIN form AS f ON f.id=s.form_id WHERE s.college=$1 AND f.renewal=$2 AND f.status=$3`, [req.user.id, _type, status]);
         res.status(200).send(passesQuery.rows);
     } catch(e) {
+        console.log(e);
         res.status(200).send("internal server error");
     }
 });
@@ -114,6 +115,7 @@ router.post('/pass/:userid/:action',verifyToken('college') , async (req, res) =>
             res.status(200).send({form_set_to: action, student_id: userid});
         }
     } catch (e) {
+        console.log(e)
         res.status(500).send("Internal server error");
     }
 });

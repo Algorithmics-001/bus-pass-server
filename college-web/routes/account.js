@@ -46,16 +46,18 @@ const {verifyToken} = require('../modules/auth.js');
 router.post('/account/:userid/:status', verifyToken('college'), async (req, res) => {
     const userid = req.params.userid;
     var status = req.params.status;
-    status = (status==='accept')?'student':status;
+    status = (status==='accepted')?'student':status;
+    console.log(status);
     try {
         const accountStatusQuery = await req.db.query(`UPDATE users AS u
         SET usertype = $1
-        FROM students AS s
+        FROM student AS s
         WHERE u.userid = s.userid
         AND s.college_id = $2
         AND u.userid=$3;
         `, [status, req.user.id, userid])
     } catch (e) {
+        console.log(e);
         res.status(500).send("Internal Server error");
     }
 });
