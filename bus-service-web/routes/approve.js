@@ -89,8 +89,29 @@ router.post('/requests/individual', verifyToken('bus-service'), async (req, res)
         return res.status(401).send({error: "Account id not provided"});
     }
     if(form) {
-        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE id=(SELECT * FROM user WHERE userid=$2)`, [form, acc_id]);
-        return res.status(200).send({status: `Query Success. Affected rows: ${formQuery.rowCount}`})
+        try {
+
+            const client = await req.db.connect();
+            await client.query('BEGIN'); // Begin transaction
+            const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE id=(SELECT * FROM user WHERE userid=$2)`, [form, acc_id]);
+            if(form === "accepted") {
+                const passQuery = await req.db.query(`INSERT INTO bus_pass (from_date, to_date, from_bus_stop, to_bus_stop, payment_ticket, userid)
+                SELECT f.from_date, f.to_date, f.from_bus_stop, f.to_bus_stop, f.payment_ticket, s.userid
+                FROM form AS f
+                JOIN student AS s ON s.id = f.student_id
+                WHERE s.userid = $1
+                RETURNING id;            
+                `, [acc_id]);
+                const updateStudentQuery = await req.db.query("UPDATE student SET bus_pass_id=$1 WHERE userid=$2",
+                [passQuery.rows[0].id, acc_id]);
+                await client.query('COMMIT'); // Commit transaction
+            }
+            return res.status(200).send({status: `Query Success. Affected rows: ${formQuery.rowCount}`})
+        } catch (e) {
+            await client.query('ROLLBACK');
+        } finally {
+            client.release();
+        }
     }
 
     res.status(200).json(":idfk");
