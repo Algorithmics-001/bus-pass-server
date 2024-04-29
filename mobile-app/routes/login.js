@@ -6,7 +6,7 @@ const secretKey = process.env.JWT_SECRET_KEY;
 const {verifyToken} = require('../modules/auth.js');
 
 function generateToken(user) {
-  return jwt.sign({id: user.userid, name: user.name,email: user.username , type: user.usertype}, secretKey, { expiresIn: '1h' });
+  return jwt.sign({id: user.userid, name: user.name,email: user.username , type: user.usertype}, secretKey, { expiresIn: '7d' });
 }
 /**
  * @swagger
