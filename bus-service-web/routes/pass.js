@@ -54,9 +54,10 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
     const _type = type?true:false;
     console.log(type, _type, status)
     try {
-        const passesQuery = await req.db.query(`SELECT s.*, f.* FROM student AS s
-        JOIN form AS f ON f.student_id=s.id
-        WHERE f.status=$1 AND f.renewal=$2 
+        const passesQuery = await req.db.query(`SELECT f.*, s.* FROM student AS s
+        JOIN users AS u ON u.userid=s.userid
+        JOIN form AS f ON f.student_id=u.userid
+        WHERE f.status=$1 and f.type=$2
         `, [status,_type]);
         res.status(200).send(passesQuery.rows);
     } catch(e) {
