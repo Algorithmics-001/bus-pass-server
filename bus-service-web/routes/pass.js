@@ -67,7 +67,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/bus-service/form/{studentid}/{action}:
+ * /api/bus-service/form/{userid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
@@ -75,7 +75,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
  *       - Forms
  *     parameters:
  *       - in: path
- *         name: studentid
+ *         name: userid
  *         required: true
  *         schema:
  *           type: string
@@ -104,15 +104,15 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
-router.post('/pass/:studentid/:action',verifyToken('bus-service') , async (req, res) => {
-    const studentid = req.params.studentid;
+router.post('/pass/:userid/:action',verifyToken('bus-service') , async (req, res) => {
+    const userid = req.params.userid;
     const action = req.params.action;
     try {
-        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE userid=$2`, [action,studentid]);
+        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE userid=$2`, [action,userid]);
         if(formQuery.rowCount === 0) {
             res.status(404).send("User not found");
         } else {
-            res.status(200).send({form_set_to: action, student_id: studentid});
+            res.status(200).send({form_set_to: action, student_id: userid});
         }
     } catch (e) {
         res.status(500).send("Internal server error");
