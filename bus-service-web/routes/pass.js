@@ -54,8 +54,10 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
     const _type = type?true:false;
     console.log(type, _type, status)
     try {
-        const passesQuery = await req.db.query(`SELECT f.*, s.* FROM student AS s
-        JOIN form AS f ON f.id=s.form_id WHERE AND f.renewal=$2`, [req.user.id, _type]);
+        const passesQuery = await req.db.query(`SELECT s.*, f.* FROM student AS s
+        JOIN form AS f ON f.student_id=s.id
+        WHERE f.status=$1 AND f.renewal=$2 
+        `, [status,_type]);
         res.status(200).send(passesQuery.rows);
     } catch(e) {
         res.status(200).send("internal server error");
@@ -65,7 +67,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/college/pass/{studentid}/{action}:
+ * /api/college/form/{studentid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
@@ -102,7 +104,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
  *         $ref: '#/components/responses/UnauthorizedError'
  */
 
-router.post('/pass/:studentid/:action',verifyToken('college') , async (req, res) => {
+router.post('/pass/:studentid/:action',verifyToken('bus-service') , async (req, res) => {
     const studentid = req.params.studentid;
     const action = req.params.action;
     try {
