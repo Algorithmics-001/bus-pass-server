@@ -66,30 +66,28 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/college/pass/{userid}/{action}:
+ * /api/college/pass/{action}:
  *   post:
- *     summary: Update form status
- *     description: Update the status of a form for a specific student.
+ *     summary: Update form status for a student
+ *     description: Update the status of a form for a student based on the action provided.
  *     tags:
- *       - Forms
+ *       - Form
  *     parameters:
  *       - in: path
- *         name: studentid
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the student whose form status will be updated.
- *       - in: path
  *         name: action
- *         required: true
  *         schema:
  *           type: string
- *         description: The new status to set for the form.
- *     security:
- *       - bearerAuth: []
+ *         required: true
+ *         description: The action to be performed on the form status (e.g., "approved", "rejected").
+ *       - in: query
+ *         name: userid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the student whose form status is to be updated.
  *     responses:
- *       200:
- *         description: The form status has been successfully updated.
+ *       '200':
+ *         description: Successful operation. Returns the updated form status and the student ID.
  *         content:
  *           application/json:
  *             schema:
@@ -97,26 +95,37 @@ router.get('/pass/get/:status',verifyToken('college') ,async (req, res) => {
  *               properties:
  *                 form_set_to:
  *                   type: string
+ *                   description: The status the form was set to.
  *                 student_id:
  *                   type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
+ *                   description: The ID of the student whose form status was updated.
+ *       '404':
+ *         description: User not found. The provided student ID does not exist in the database.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *       '500':
+ *         description: Internal server error. An unexpected error occurred while processing the request.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
  */
-
-// * [POST]//pass/:id/:whattodo (rejected/forward/applied)
-router.post('/pass/:userid/:action',verifyToken('college') , async (req, res) => {
-    const userid = req.params.userid;
-    const action = req.params.action;
+router.post('/pass/:action', verifyToken('college'), async (req, res) => {
+    const { userid } = req.query;
+    const { action } = req.params;
+    console.log(userid, action);
     try {
-        const formQuery = await req.db.query(`UPDATE form SET status=$1 WHERE userid=$2`, [action,userid]);
-        if(formQuery.rowCount === 0) {
-            res.status(404).send("User not found");
+        const formQuery = await req.db.query('UPDATE form SET status = $1 WHERE student_id = $2', [action, userid]);
+        if (formQuery.rowCount === 0) {
+            res.status(404).send('User not found');
         } else {
-            res.status(200).send({form_set_to: action, student_id: userid});
+            res.status(200).send({ form_set_to: action, student_id: userid });
         }
-    } catch (e) {
-        console.log(e)
-        res.status(500).send("Internal server error");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
     }
 });
 
