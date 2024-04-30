@@ -31,9 +31,10 @@ app.use(attachCheckFields);
 const loginRouter = require('./routes/login.js');
 const getdataRouter = require('./routes/getdata.js');
 const approveRouter = require('./routes/approve.js');
+const passRouter = require('./routes/pass.js');
 app.use('/api/bus-service', loginRouter);
 app.use('/api/bus-service', getdataRouter);
-app.use('/api/bus-service', approveRouter);
+app.use('/api/bus-service', passRouter);
 
 
 

@@ -13,7 +13,7 @@ const {verifyToken} = require('../modules/auth.js');
 */
 /**
  * @swagger
- * /api/college/pass/get/{status}:
+ * /api/bus-service/pass/get/{status}:
  *   get:
  *     summary: Get passes based on status
  *     description: Retrieve passes based on status for students of the authenticated college.
@@ -67,7 +67,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
 
 /**
  * @swagger
- * /api/college/form/{studentid}/{action}:
+ * /api/bus-service/form/{studentid}/{action}:
  *   post:
  *     summary: Update form status
  *     description: Update the status of a form for a specific student.
