@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
           const user = result.rows[0];
           const token = generateToken(user);
           res.cookie('token', token, { 
-            httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
+            httpOnly: false, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
           });
           return res.redirect('/bus-service');
       } else {
