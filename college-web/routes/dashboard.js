@@ -34,50 +34,50 @@ const {verifyToken} = require('../modules/auth.js');
  *               type: string
  */
 
-router.get('/dashboard', verifyToken('college'), async (req, res) => {
+router.get('/dashboard', async (req, res) => {
     try {
     const accountRequests = await req.db.query(`SELECT COUNT(*) FROM
     users AS u
     JOIN student AS s ON s.userid=u.userid
     WHERE
-    u.usertype='applied' AND s.college=$1`, [req.user.id]);
+    u.usertype='applied' AND s.college=$1`, [2]);
 
     const accountsAccepted = await req.db.query(`SELECT COUNT(*) FROM
     users AS u
     JOIN student AS s ON s.userid=u.userid
     WHERE
-    u.usertype='student' AND s.college=$1`, [req.user.id]);
+    u.usertype='student' AND s.college=$1`, [2]);
 
     const accountsRejected = await req.db.query(`SELECT COUNT(*) FROM
     users AS u
     JOIN student AS s ON s.userid=u.userid
     WHERE
-    u.usertype='rejected' AND s.college=$1`, [req.user.id]);
+    u.usertype='rejected' AND s.college=$1`, [2]);
 
     const passesAccepted = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
     WHERE f.status='accepted' AND s.college=$1;
-    `, [req.user.id]);
+    `, [2]);
 
     const passesRejected = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
     WHERE f.status='rejected' AND s.college=$1;
-    `, [req.user.id]);
+    `, [2]);
 
     const passesForwarded = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
     WHERE f.status='forwarded' AND s.college=$1;
-    `, [req.user.id]);
+    `, [2]);
 
     const passesDenied = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
     WHERE f.status='denied' AND s.college=$1;
-    `, [req.user.id]);
+    `, [2]);
 
     const renewAccepted = await req.db.query(`SELECT COUNT(*) FROM 
     form AS f JOIN student AS s ON s.id=f.student_id
     WHERE f.status='accepted' AND f.renewal=true AND s.college=$1;
-    `, [req.user.id]);
+    `, [2]);
     
     res.status(200).send([
         // college_id: req.user.id,
