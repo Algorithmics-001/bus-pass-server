@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
           res.cookie('token', token, { 
             httpOnly: true, // Ensures the cookie is only accessible via HTTP(S) and not client-side scripts
           });
-          return res.redirect('/bus-service');
+          return res.status(200).send("ok");
       } else {
           return res.status(401).send({
               message: "Username or Password invalid.",
