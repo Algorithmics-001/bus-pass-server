@@ -6,7 +6,7 @@ const {verifyToken} = require('../modules/auth.js');
 router.post('/bulk', verifyToken('college'), async (req, res) => {
     console.log(req.body);
 
-    res.status(500).send("Thanks for sharing");
+    res.status(200).send("Thanks for sharing");
 });
 
 module.exports = router;
