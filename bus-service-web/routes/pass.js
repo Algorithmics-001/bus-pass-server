@@ -66,6 +66,7 @@ router.get('/pass/get/:status',verifyToken('bus-service') ,async (req, res) => {
 });
 
 
+
 /**
  * @swagger
  * /api/bus-service/form/{userid}/{action}:
